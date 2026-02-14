@@ -18,7 +18,6 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from services.data_loader import *
 from processing.transformations import *
 from components.charts import *
-from utils.scoring import *
 
 st.set_page_config(
     page_title="Pipeline Operations Dashboard",
@@ -183,18 +182,12 @@ col1, col2, col3 = st.columns(3)
 
 with col1:
     st.markdown(kpi_card("Total Pipelines", total_pipelines, "#38bdf8"), unsafe_allow_html=True)
-    if st.button("View All", key="total_btn"):
-        pass # Add callback logic if needed
 
 with col2:
     st.markdown(kpi_card("Passing Pipelines", passing, "#22c55e"), unsafe_allow_html=True)
-    if st.button("Filter Passing", key="pass_btn"):
-        pass
 
 with col3:
     st.markdown(kpi_card("Failing Pipelines", failures, "#ef4444"), unsafe_allow_html=True)
-    if st.button("Filter Failing", key="fail_btn"):
-        pass
 
 st.divider()
 
