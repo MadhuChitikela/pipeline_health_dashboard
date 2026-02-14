@@ -45,82 +45,79 @@ with header_right:
 # Set compatibility variable for charts (lowercase for consistency)
 theme_choice = "dark" if st.session_state.theme_mode == "dark" else "light"
 
-# ---- DYNAMIC CSS (Glassmorphism) ----
+# ---- DYNAMIC CSS (Force Override) ----
 if st.session_state.theme_mode == "dark":
-    bg_gradient = "#0B1220"
-    card_bg = "rgba(22, 27, 34, 0.85)"
+    bg_color = "#0B1220"
     text_color = "#E6EDF3"
-    border_color = "rgba(255, 255, 255, 0.1)"
-    accent_color = "#3B82F6"
-    metric_bg = "#161B22"
+    card_bg = "#111827"
+    border_color = "#1F2937"
+    metric_bg = "#111827"
 else:
-    bg_gradient = "linear-gradient(135deg, #E3F2FD 0%, #F8FAFC 100%)"
-    card_bg = "rgba(255, 255, 255, 0.65)"
-    text_color = "#1E293B"
-    border_color = "rgba(255, 255, 255, 0.4)"
-    accent_color = "#2563EB"
-    metric_bg = "rgba(255, 255, 255, 0.6)"
+    bg_color = "#F1F5F9"
+    text_color = "#0F172A"
+    card_bg = "rgba(255, 255, 255, 0.75)"
+    border_color = "#CBD5E1"
+    metric_bg = "#FFFFFF"
 
 st.markdown(f"""
 <style>
-    .stApp {{
-        background: {bg_gradient};
-        color: {text_color};
+    /* Main App Background - Targeted Specificity */
+    .stApp, section[data-testid="stAppViewContainer"] {{
+        background-color: {bg_color};
     }}
 
-    h1, h2, h3, h4, h5, h6, p, label {{
+    /* Global Text Override */
+    section[data-testid="stAppViewContainer"] *, 
+    section[data-testid="stAppViewContainer"] p,
+    section[data-testid="stAppViewContainer"] span,
+    section[data-testid="stAppViewContainer"] label,
+    section[data-testid="stAppViewContainer"] h1,
+    section[data-testid="stAppViewContainer"] h2,
+    section[data-testid="stAppViewContainer"] h3 {{
         color: {text_color} !important;
     }}
 
-    /* Glassmorphism Metric Cards */
+    /* Metric Cards - High Specificity */
     div[data-testid="stMetric"] {{
-        background: {metric_bg};
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border-radius: 16px;
-        padding: 20px;
+        background-color: {metric_bg} !important;
         border: 1px solid {border_color};
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     }}
 
-    div[data-testid="stMetricLabel"] {{
+    /* Metric Labels */
+    div[data-testid="stMetricLabel"] label {{
         color: {text_color} !important;
-        opacity: 0.8;
+        opacity: 0.7;
         font-weight: 600;
     }}
 
     div[data-testid="stMetricValue"] {{
-        color: {accent_color} !important;
+        color: {text_color} !important;
     }}
 
-    /* Tabs Styling */
-    button[data-baseweb="tab"] {{
+    /* Buttons */
+    .stButton > button {{
+        background-color: {border_color};
         color: {text_color};
-        background-color: transparent;
-    }}
-    
-    /* Button Styling */
-    .stButton button {{
-        background: {accent_color};
-        color: white;
-        border-radius: 12px;
+        border-radius: 8px;
         border: none;
         font-weight: 600;
-        transition: all 0.3s ease;
+        transition: all 0.2s;
     }}
-    .stButton button:hover {{
-        transform: translateY(-2px);
-        box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.4);
+    .stButton > button:hover {{
+        filter: brightness(1.1);
     }}
 
-    /* DataFrame Container */
+    /* DataTable Container */
     [data-testid="stDataFrame"] {{
-        background: {card_bg};
-        backdrop-filter: blur(12px);
-        border-radius: 12px;
-        padding: 10px;
+        background-color: {card_bg};
         border: 1px solid {border_color};
+        border-radius: 10px;
+        padding: 5px;
     }}
+
 </style>
 """, unsafe_allow_html=True)
 

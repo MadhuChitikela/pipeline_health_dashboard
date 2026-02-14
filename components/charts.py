@@ -4,28 +4,49 @@ import plotly.express as px
 
 
 
+
 def apply_theme_to_fig(fig, theme):
     if theme == "dark":
         fig.update_layout(
             template="plotly_dark",
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(0,0,0,0)",
+            paper_bgcolor="#0B1220",
+            plot_bgcolor="#0B1220",
             font=dict(color="#E6EDF3", family="Inter, sans-serif"),
             hoverlabel=dict(bgcolor="#161B22", bordercolor="#30363D"),
             legend=dict(font=dict(color="#E6EDF3")),
-            xaxis=dict(gridcolor="rgba(255,255,255,0.1)", zerolinecolor="rgba(255,255,255,0.1)"),
-            yaxis=dict(gridcolor="rgba(255,255,255,0.1)", zerolinecolor="rgba(255,255,255,0.1)")
+            xaxis=dict(
+                title_font=dict(color="#E6EDF3"),
+                tickfont=dict(color="#E6EDF3"),
+                gridcolor="rgba(255,255,255,0.1)", 
+                zerolinecolor="rgba(255,255,255,0.1)"
+            ),
+            yaxis=dict(
+                title_font=dict(color="#E6EDF3"),
+                tickfont=dict(color="#E6EDF3"),
+                gridcolor="rgba(255,255,255,0.1)", 
+                zerolinecolor="rgba(255,255,255,0.1)"
+            )
         )
     else:
         fig.update_layout(
             template="plotly_white",
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
-            font=dict(color="#1E293B", family="Inter, sans-serif"),
+            font=dict(color="#0F172A", family="Inter, sans-serif"),
             hoverlabel=dict(bgcolor="white", bordercolor="#E2E8F0"),
-            legend=dict(font=dict(color="#1E293B")),
-            xaxis=dict(gridcolor="rgba(0,0,0,0.06)", zerolinecolor="rgba(0,0,0,0.06)"),
-            yaxis=dict(gridcolor="rgba(0,0,0,0.06)", zerolinecolor="rgba(0,0,0,0.06)")
+            legend=dict(font=dict(color="#0F172A")),
+            xaxis=dict(
+                title_font=dict(color="#0F172A"),
+                tickfont=dict(color="#0F172A"),
+                gridcolor="rgba(0,0,0,0.06)", 
+                zerolinecolor="rgba(0,0,0,0.06)"
+            ),
+            yaxis=dict(
+                title_font=dict(color="#0F172A"),
+                tickfont=dict(color="#0F172A"),
+                gridcolor="rgba(0,0,0,0.06)", 
+                zerolinecolor="rgba(0,0,0,0.06)"
+            )
         )
     return fig
 
