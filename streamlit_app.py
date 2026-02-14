@@ -160,66 +160,39 @@ st.markdown("---")
 
 
 # --- HELPER COMPONENT ---
-def kpi_card(title, value, color):
-    return f"""
-    <div class="kpi-card" style="border-left:6px solid {color};">
-        <div class="kpi-title" style="color:{color};">{title}</div>
-        <div class="kpi-value">{value}</div>
-    </div>
-    """
-
-# --- KPIS ---
-if not df_jobs.empty:
-    total_pipelines = df_jobs["PIPELINE_NAME"].nunique()
-    failures = df_jobs[df_jobs["STATUS"] == "FAIL"]["PIPELINE_NAME"].nunique()
-    passing = total_pipelines - failures
-else:
-    total_pipelines = 0
-    failures = 0
-    passing = 0
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    st.markdown(kpi_card("Total Pipelines", total_pipelines, "#38bdf8"), unsafe_allow_html=True)
-
-with col2:
-    st.markdown(kpi_card("Passing Pipelines", passing, "#22c55e"), unsafe_allow_html=True)
-
-with col3:
-    st.markdown(kpi_card("Failing Pipelines", failures, "#ef4444"), unsafe_allow_html=True)
-
-st.divider()
-
 # --- 1️⃣ EXECUTION TIMELINESS ---
 st.markdown('<div class="section-title">1️⃣ Execution Timeliness</div>', unsafe_allow_html=True)
-st.caption("Monitoring job duration, status, and SLA adherence.")
+st.caption("Audit of job duration, execution status, and SLA adherence based on DIM_PIPELINE_JOB_TIMELINESS.")
 
 if not df_jobs.empty:
-    col1, col2, col3, col4 = st.columns(4)
-    
+    # Strict Metrics: Raw Counts
     total_runs = len(df_jobs)
+    distinct_pipelines = df_jobs["PIPELINE_NAME"].nunique()
+    # Using raw status counts
     success_runs = len(df_jobs[df_jobs["STATUS"] == "PASS"])
     fail_runs = len(df_jobs[df_jobs["STATUS"] == "FAIL"])
     sla_breaches = df_jobs["SLA_BREACH"].sum()
 
-    col1.metric("Total Pipeline Runs", total_runs)
-    col2.metric("Successful Runs", success_runs, delta=f"{success_runs/total_runs:.0%}" if total_runs > 0 else None)
-    col3.metric("Failed Runs", fail_runs, delta=f"-{fail_runs}", delta_color="inverse")
-    col4.metric("SLA Breaches", int(sla_breaches), delta=f"-{int(sla_breaches)}" if sla_breaches > 0 else "Stable", delta_color="inverse")
+    m1, m2, m3, m4, m5 = st.columns(5)
+    m1.metric("Distinct Pipelines", distinct_pipelines)
+    m2.metric("Total Job Runs", total_runs)
+    m3.metric("Success Runs", success_runs)
+    m4.metric("Failed Runs", fail_runs)
+    m5.metric("SLA Breaches", int(sla_breaches))
 
-    tab_t1, tab_t2 = st.tabs(["📉 Duration Trend", "📋 Execution Log"])
+    tab_t1, tab_t2 = st.tabs(["📉 Duration Trend", "📋 Raw Execution Log"])
     
     with tab_t1:
         st.plotly_chart(duration_trend_chart(df_jobs, theme_choice), use_container_width=True)
         
     with tab_t2:
+        # Displaying raw fields + computed duration for audit
         st.dataframe(
             df_jobs[[
-                "PIPELINE_NAME", "JOB_NAME", "STATUS", "JOB_START_TIME", "DURATION_MINUTES", "SLA_BREACH"
-            ]].style.applymap(
-                lambda v: "color: #22c55e; font-weight:bold;" if v == "PASS" else "color: #ef4444; font-weight:bold;" if v == "FAIL" else ""
-                , subset=["STATUS"]
+                "PIPELINE_NAME", "JOB_NAME", "EXECUTION_STATUS", "JOB_START_TIME", "END_TIME", "DURATION_MINUTES", "SLA_BREACH"
+            ]].style.map(
+                lambda v: "color: #ef4444; font-weight:bold;" if v == True else ""
+                , subset=["SLA_BREACH"]
             ),
             use_container_width=True
         )
