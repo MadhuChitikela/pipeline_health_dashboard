@@ -45,122 +45,188 @@ with header_right:
 # Set compatibility variable for charts (lowercase for consistency)
 theme_choice = "dark" if st.session_state.theme_mode == "dark" else "light"
 
-# ---- DYNAMIC CSS (Premium Glow) ----
+# ---- DYNAMIC CSS (Theme Scoped) ----
 if st.session_state.theme_mode == "dark":
-    bg_color = "#0B1220"
-    text_color = "#FFFFFF"
-    card_bg = "#111827"
-    border_color = "#1F2937"
-    metric_bg = "#111827"
-    # Subtle Blue-White Glow for Dark Mode
-    glow_css = "text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);"
-    header_color = "#60A5FA" # Brighter Blue
-else:
-    bg_color = "#F1F5F9"
-    text_color = "#0F172A"
-    card_bg = "rgba(255, 255, 255, 0.75)"
-    border_color = "#CBD5E1"
-    metric_bg = "#FFFFFF"
-    glow_css = ""
-    header_color = "#2563EB"
-
-st.markdown(f"""
-<style>
-    /* Main App Background */
-    .stApp, section[data-testid="stAppViewContainer"] {{
-        background-color: {bg_color};
-    }}
+    # --- DARK MODE STYLES ---
+    st.markdown("""
+    <style>
+    /* Main Background */
+    .stApp, section[data-testid="stAppViewContainer"] {
+        background-color: #0B1220;
+    }
 
     /* Global Text Override */
     section[data-testid="stAppViewContainer"] *, 
     section[data-testid="stAppViewContainer"] p,
     section[data-testid="stAppViewContainer"] span,
     section[data-testid="stAppViewContainer"] label,
-    section[data-testid="stAppViewContainer"] li {{
-        color: {text_color} !important;
-    }}
+    section[data-testid="stAppViewContainer"] li {
+        color: #E6EDF3 !important;
+    }
 
-    /* Section Titles - Enhanced Glow */
-    .section-title {{
-        font-size: 24px;
-        font-weight: 700;
-        margin-top: 30px;
-        margin-bottom: 5px;
-        color: {header_color} !important;
-        {glow_css}
-    }}
-
-    /* Section Subtitles */
-    .section-subtitle {{
-        font-size: 14px;
-        font-weight: 400;
-        color: {text_color} !important;
-        opacity: 0.8;
-        margin-bottom: 15px;
-    }}
-
-    /* Headers with Premium Glow */
-    h1, h2, h3, section[data-testid="stAppViewContainer"] h1, 
-    section[data-testid="stAppViewContainer"] h2, 
-    section[data-testid="stAppViewContainer"] h3 {{
-        color: {header_color} !important;
+    /* Headings - Bright White Glow */
+    h1, h2, h3, h4, h5, .section-title {
+        color: #FFFFFF !important;
+        text-shadow: 0 0 10px rgba(59, 130, 246, 0.6) !important;
         font-weight: 700 !important;
-        {glow_css}
-    }}
+    }
 
-    /* Metric Cards - Premium Depth */
-    div[data-testid="stMetric"] {{
-        background-color: {metric_bg} !important;
-        border: 1px solid {border_color};
-        border-radius: 12px;
+    /* Subtitles - Soft White */
+    .section-subtitle {
+        color: #D1D5DB !important;
+        opacity: 0.9;
+        font-weight: 400;
+    }
+
+    /* Metric Cards - Glassy Gradient */
+    div[data-testid="stMetric"] {
+        background: linear-gradient(145deg, rgba(17,24,39,0.95), rgba(31,41,55,0.9)) !important;
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 14px;
         padding: 20px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-        transition: transform 0.2s;
-    }}
-    div[data-testid="stMetric"]:hover {{
-        transform: translateY(-2px);
-        box-shadow: 0 8px 30px rgba(59, 130, 246, 0.15);
-    }}
-
-    /* Metric Values - Strong Glow */
-    div[data-testid="stMetricValue"] {{
-        color: {text_color} !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(12px);
+    }
+    
+    /* Metric Values - Neon Punch */
+    div[data-testid="stMetricValue"] {
+        color: #FFFFFF !important;
         font-size: 28px !important;
         font-weight: 700 !important;
-        {glow_css}
-    }}
+        text-shadow: 0 0 12px rgba(59, 130, 246, 0.8);
+    }
 
     /* Metric Labels */
-    div[data-testid="stMetricLabel"] label {{
-        color: {text_color} !important;
-        opacity: 0.85;
+    div[data-testid="stMetricLabel"] label {
+        color: #E6EDF3 !important;
+        opacity: 0.9;
         font-weight: 600;
-    }}
+    }
+
+    /* Tables - Forced Dark */
+    div[data-testid="stDataFrame"], 
+    div[data-testid="stDataFrame"] div[data-testid="stTable"] {
+        background-color: #111827 !important;
+        border: 1px solid #1F2937;
+        border-radius: 10px;
+    }
+    div[data-testid="stDataFrame"] table {
+        color: #E6EDF3 !important;
+    }
+    div[data-testid="stDataFrame"] thead tr th {
+        background-color: #1F2937 !important;
+        color: #FFFFFF !important;
+        border-bottom: 2px solid #374151 !important;
+    }
+    div[data-testid="stDataFrame"] tbody tr {
+        background-color: #111827 !important;
+        color: #E6EDF3 !important;
+    }
+    div[data-testid="stDataFrame"] tbody tr:nth-of-type(even) {
+        background-color: #0d1117 !important;
+    }
 
     /* Buttons */
-    .stButton > button {{
-        background-color: {header_color};
+    .stButton > button {
+        background-color: #2563EB;
         color: #FFFFFF !important;
         border-radius: 8px;
         border: none;
         font-weight: 600;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
-    }}
-    .stButton > button:hover {{
-        filter: brightness(1.1);
-        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
-    }}
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+    }
+    .stButton > button:hover {
+        background-color: #3B82F6;
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
-    /* DataTable Container */
-    [data-testid="stDataFrame"] {{
-        background-color: {card_bg};
-        border: 1px solid {border_color};
+else:
+    # --- LIGHT MODE STYLES ---
+    st.markdown("""
+    <style>
+    /* Main Background */
+    .stApp, section[data-testid="stAppViewContainer"] {
+        background-color: #F1F5F9;
+    }
+
+    /* Global Text */
+    section[data-testid="stAppViewContainer"] *, 
+    section[data-testid="stAppViewContainer"] p, 
+    section[data-testid="stAppViewContainer"] span, 
+    section[data-testid="stAppViewContainer"] label, 
+    section[data-testid="stAppViewContainer"] li {
+        color: #0F172A !important;
+    }
+
+    /* Headings - Clean Dark Blue */
+    h1, h2, h3, h4, h5, .section-title {
+        color: #0F172A !important;
+        text-shadow: none !important;
+        font-weight: 700 !important;
+    }
+
+    /* Subtitles */
+    .section-subtitle {
+        color: #475569 !important;
+        font-weight: 400;
+    }
+
+    /* Metric Cards - Clean White */
+    div[data-testid="stMetric"] {
+        background-color: #FFFFFF !important;
+        border: 1px solid #CBD5E1;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+    
+    /* Metric Values - Crisp Dark Blue */
+    div[data-testid="stMetricValue"] {
+        color: #2563EB !important;
+        font-size: 28px !important;
+        font-weight: 700 !important;
+    }
+
+    /* Metric Labels */
+    div[data-testid="stMetricLabel"] label {
+        color: #64748B !important;
+        font-weight: 600;
+    }
+
+    /* Tables - Clean Light */
+    div[data-testid="stDataFrame"] {
+        background-color: #FFFFFF !important;
+        border: 1px solid #E2E8F0;
         border-radius: 10px;
-        padding: 5px;
-    }}
+    }
+    div[data-testid="stDataFrame"] thead tr th {
+        background-color: #F8FAFC !important;
+        color: #0F172A !important;
+        border-bottom: 2px solid #E2E8F0 !important;
+    }
+    div[data-testid="stDataFrame"] tbody tr {
+        background-color: #FFFFFF !important;
+        color: #0F172A !important;
+    }
+    div[data-testid="stDataFrame"] tbody tr:nth-of-type(even) {
+        background-color: #F8FAFC !important;
+    }
 
-</style>
-""", unsafe_allow_html=True)
+    /* Buttons */
+    .stButton > button {
+        background-color: #E2E8F0;
+        color: #0F172A !important;
+        border-radius: 8px;
+        border: 1px solid #CBD5E1;
+        font-weight: 600;
+    }
+    .stButton > button:hover {
+        background-color: #CBD5E1;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
 # Helper for Enhanced Table Styling
 def style_table(df, theme):
