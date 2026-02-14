@@ -2,7 +2,7 @@
 import streamlit as st
 
 @st.cache_data(ttl=600)
-def load_job_timeliness(session, start_date=None, end_date=None):
+def load_job_timeliness(_session, start_date=None, end_date=None):
     query = """
         SELECT
             PIPELINE_NAME,
@@ -21,11 +21,11 @@ def load_job_timeliness(session, start_date=None, end_date=None):
         BETWEEN '{start_date}' AND '{end_date}'
         """
 
-    return session.sql(query).to_pandas()
+    return _session.sql(query).to_pandas()
 
 
 @st.cache_data(ttl=600)
-def load_sources(session, start_date=None, end_date=None):
+def load_sources(_session, start_date=None, end_date=None):
     query = """
         SELECT
             RUN_ID,
@@ -43,12 +43,12 @@ def load_sources(session, start_date=None, end_date=None):
         BETWEEN '{start_date}' AND '{end_date}'
         """
 
-    return session.sql(query).to_pandas()
+    return _session.sql(query).to_pandas()
 
 
 @st.cache_data(ttl=600)
-def load_outputs(session):
-    return session.sql("""
+def load_outputs(_session):
+    return _session.sql("""
         SELECT
             RUN_ID,
             PIPELINE_NAME,
@@ -59,7 +59,7 @@ def load_outputs(session):
 
 
 @st.cache_data(ttl=600)
-def load_uniqueness(session, start_date=None, end_date=None):
+def load_uniqueness(_session, start_date=None, end_date=None):
     query = """
         SELECT
             RUN_ID,
@@ -78,11 +78,11 @@ def load_uniqueness(session, start_date=None, end_date=None):
         BETWEEN '{start_date}' AND '{end_date}'
         """
 
-    return session.sql(query).to_pandas()
+    return _session.sql(query).to_pandas()
 
 
 @st.cache_data(ttl=600)
-def load_integrity(session, start_date=None, end_date=None):
+def load_integrity(_session, start_date=None, end_date=None):
     query = """
         SELECT
             RUN_ID,
@@ -98,4 +98,4 @@ def load_integrity(session, start_date=None, end_date=None):
         BETWEEN '{start_date}' AND '{end_date}'
         """
 
-    return session.sql(query).to_pandas()
+    return _session.sql(query).to_pandas()
