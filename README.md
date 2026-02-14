@@ -25,8 +25,17 @@ The application relies on the following schema objects (as per client specificat
 - `DB_RETAIL_PRD.CONTROL.DIM_PIPELINE_CONTROL_UNIQUENESS`
 - `DB_RETAIL_PRD.CONTROL.DIM_PIPELINE_CONTROL_INTEGRITY`
 
-### Local Development (View Mode)
-If run locally without a Snowflake session, the application will default to **View Mode**, displaying the dashboard layout with empty data structures. This allows for logic verification and UI testing without database connectivity.
+### Local Development (Simulation Mode)
+The application includes a **SQLite Simulation Layer** for robust local testing without Snowflake access. 
+- It automatically detects when `snowflake.snowpark` session is missing.
+- It connects to a local SQLite database (`local_simulation.db`) that mimics the exact production schema.
+- This allows for full end-to-end verification of UI logic, data transformations, and KPI calculations.
+
+To initialize local data:
+```bash
+python setup_local_db.py
+streamlit run streamlit_app.py
+```
 
 ## 📊 Key Metrics Logic
 
