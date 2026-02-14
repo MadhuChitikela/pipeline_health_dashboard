@@ -45,7 +45,7 @@ with header_right:
 # Set compatibility variable for charts (lowercase for consistency)
 theme_choice = "dark" if st.session_state.theme_mode == "dark" else "light"
 
-# ---- DYNAMIC CSS (Definitive Force Override) ----
+# ---- DYNAMIC CSS (Final Fix - Force Table & Glow) ----
 if st.session_state.theme_mode == "dark":
     bg_color = "#0B1426"
     text_color = "#FFFFFF"
@@ -69,13 +69,13 @@ if st.session_state.theme_mode == "dark":
         color: #FFFFFF !important;
     }
 
-    /* Section Subtitles - Slight Dim */
+    /* Section Subtitles */
     .section-subtitle {
         color: #E6EDF3 !important;
         opacity: 0.9;
     }
 
-    /* Metric Cards - Gradient & Shadow */
+    /* Metric Containers - Gradient & Shadow */
     div[data-testid="stMetric"], div[data-testid="metric-container"] {
         background: linear-gradient(145deg, #101C33, #0E1A30) !important;
         border: 1px solid rgba(0,150,255,0.3) !important;
@@ -84,43 +84,46 @@ if st.session_state.theme_mode == "dark":
         box-shadow: 0 0 25px rgba(0,120,255,0.2) !important;
     }
 
-    /* Metric Labels */
-    div[data-testid="stMetricLabel"] label {
-        color: #BFD9FF !important;
-        font-weight: 600 !important;
-    }
-
-    /* Metric Values */
-    div[data-testid="stMetricValue"] {
+    /* Metric Values - Glow */
+    div[data-testid="stMetricValue"], div[data-testid="metric-container"] div {
         color: #FFFFFF !important;
         font-size: 28px !important;
         font-weight: 700 !important;
-        text-shadow: 0 0 10px rgba(0,150,255,0.8) !important;
+        text-shadow: 0 0 12px rgba(0,150,255,0.9) !important;
     }
 
-    /* DataFrame Container */
-    div[data-testid="stDataFrame"] {
-        background-color: #111C33 !important;
-        border: 1px solid #1F2937;
-        border-radius: 12px;
+    /* Section Headings Glow */
+    h1, h2, h3, .section-title {
+        color: #FFFFFF !important;
+        text-shadow: 0 0 8px rgba(0,150,255,0.7) !important;
     }
-    
-    /* Table Headers */
-    div[data-testid="stDataFrame"] thead th {
+
+    /* ===== FORCE DARK TABLE ===== */
+    div[data-testid="stDataFrame"] {
+        background-color: #0F1C33 !important;
+        border-radius: 14px !important;
+        box-shadow: 0 0 25px rgba(0,150,255,0.25);
+        border: 1px solid rgba(0,150,255,0.2);
+    }
+
+    div[data-testid="stDataFrame"] table {
+        background-color: #0F1C33 !important;
+        color: white !important;
+    }
+
+    div[data-testid="stDataFrame"] thead tr th {
         background-color: #16284B !important;
         color: #FFFFFF !important;
-        font-weight: 600 !important;
+        font-weight: 700 !important;
         border-bottom: 2px solid #2D3748 !important;
     }
 
-    /* Table Rows */
-    div[data-testid="stDataFrame"] tbody td {
-        background-color: #111C33 !important;
+    div[data-testid="stDataFrame"] tbody tr td {
+        background-color: #0F1C33 !important;
         color: #FFFFFF !important;
         border-bottom: 1px solid #1F2937 !important;
     }
-    
-    /* Table Striping */
+
     div[data-testid="stDataFrame"] tbody tr:nth-child(even) td {
         background-color: #142241 !important;
     }
@@ -142,10 +145,10 @@ if st.session_state.theme_mode == "dark":
     """, unsafe_allow_html=True)
 
 else:
-    # --- LIGHT MODE STYLES ---
+    # --- LIGHT MODE STYLES (Glass + Soft Glow) ---
     bg_color = "#F1F5F9"
     text_color = "#0F172A"
-    card_bg = "rgba(255, 255, 255, 0.75)"
+    card_bg = "rgba(255, 255, 255, 0.8)"
     border_color = "#CBD5E1"
     metric_bg = "#FFFFFF"
     header_color = "#2563EB"
@@ -168,8 +171,8 @@ else:
 
     /* Headings */
     h1, h2, h3, h4, h5, .section-title {
-        color: #0F172A !important;
-        text-shadow: none !important;
+        color: #0A1F44 !important;
+        text-shadow: 0 0 6px rgba(0,120,255,0.4) !important;
         font-weight: 700 !important;
     }
 
@@ -179,13 +182,13 @@ else:
         font-weight: 400;
     }
 
-    /* Metric Cards */
-    div[data-testid="stMetric"] {
-        background-color: #FFFFFF !important;
-        border: 1px solid #CBD5E1;
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    /* Glass KPI */
+    div[data-testid="stMetric"], div[data-testid="metric-container"] {
+        background: rgba(255,255,255,0.6) !important;
+        backdrop-filter: blur(12px);
+        border-radius: 14px !important;
+        border: 1px solid rgba(0,120,255,0.2) !important;
+        box-shadow: 0 0 20px rgba(0,120,255,0.15) !important;
     }
     
     /* Metric Values */
@@ -201,23 +204,24 @@ else:
         font-weight: 600;
     }
 
-    /* Tables */
+    /* Light Table */
     div[data-testid="stDataFrame"] {
-        background-color: #FFFFFF !important;
+        background: rgba(255,255,255,0.8) !important;
+        backdrop-filter: blur(10px);
+        border-radius: 14px;
         border: 1px solid #E2E8F0;
-        border-radius: 10px;
     }
     div[data-testid="stDataFrame"] thead tr th {
-        background-color: #F8FAFC !important;
-        color: #0F172A !important;
+        background-color: #EAF4FF !important;
+        color: #0A1F44 !important;
         border-bottom: 2px solid #E2E8F0 !important;
     }
-    div[data-testid="stDataFrame"] tbody tr {
-        background-color: #FFFFFF !important;
-        color: #0F172A !important;
+    div[data-testid="stDataFrame"] tbody td {
+        background-color: transparent !important;
+        color: #0A1F44 !important;
     }
     div[data-testid="stDataFrame"] tbody tr:nth-of-type(even) {
-        background-color: #F8FAFC !important;
+        background-color: rgba(248, 250, 252, 0.5) !important;
     }
 
     /* Buttons */
@@ -242,11 +246,11 @@ def style_table(df, theme):
               "props": [
                   ("background-color", "#16284B"), 
                   ("color", "#FFFFFF"), 
-                  ("font-weight", "600"),
+                  ("font-weight", "700"),
                   ("border-bottom", "2px solid #2D3748")
               ]}]
         ).set_properties(**{
-            "background-color": "#111C33",
+            "background-color": "#0F1C33",
             "color": "#FFFFFF",
             "border-color": "#1F2937"
         })
@@ -254,14 +258,14 @@ def style_table(df, theme):
         return df.style.set_table_styles(
             [{"selector": "th",
               "props": [
-                  ("background-color", "#F8FAFC"), 
-                  ("color", "#0F172A"), 
+                  ("background-color", "#EAF4FF"), 
+                  ("color", "#0A1F44"), 
                   ("font-weight", "600"),
                   ("border-bottom", "2px solid #E2E8F0")
               ]}]
         ).set_properties(**{
             "background-color": "#FFFFFF",
-            "color": "#0F172A",
+            "color": "#0A1F44",
             "border-color": "#E2E8F0"
         })
 
