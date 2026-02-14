@@ -233,19 +233,29 @@ def style_table(df, theme):
     if theme == "dark":
         return df.style.set_table_styles(
             [{"selector": "th",
-              "props": [("background-color", "#161B22"), ("color", "#E6EDF3"), ("border-bottom", "2px solid #30363D")]}]
+              "props": [
+                  ("background-color", "#1F2937"), 
+                  ("color", "#FFFFFF"), 
+                  ("font-weight", "600"),
+                  ("border-bottom", "2px solid #374151")
+              ]}]
         ).set_properties(**{
-            "background-color": "#0D1117",
-            "color": "#E6EDF3",
-            "border-color": "#30363D"
+            "background-color": "#111827",
+            "color": "#FFFFFF",
+            "border-color": "#374151"
         })
     else:
         return df.style.set_table_styles(
             [{"selector": "th",
-              "props": [("background-color", "#E3F2FD"), ("color", "#1E293B"), ("border-bottom", "2px solid #BFDBFE")]}]
+              "props": [
+                  ("background-color", "#F8FAFC"), 
+                  ("color", "#0F172A"), 
+                  ("font-weight", "600"),
+                  ("border-bottom", "2px solid #E2E8F0")
+              ]}]
         ).set_properties(**{
-            "background-color": "rgba(255, 255, 255, 0.8)",
-            "color": "#1E293B",
+            "background-color": "#FFFFFF",
+            "color": "#0F172A",
             "border-color": "#E2E8F0"
         })
 
