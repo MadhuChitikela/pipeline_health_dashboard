@@ -64,20 +64,20 @@ grain_option = st.radio("Time Granularity", ["Weekly", "Daily"], horizontal=True
 grain_code = "W" if grain_option == "Weekly" else "D"
 
 # Load Data
-if session:
-    with st.spinner("Loading analytics data..."):
-        try:
-            df_jobs = load_job_timeliness(session, start_date, end_date)
-            df_sources = load_sources(session, start_date, end_date)
-            df_uniqueness = load_uniqueness(session, start_date, end_date)
-            df_integrity = load_integrity(session, start_date, end_date)
-        except Exception as e:
-            st.error(f"Error loading data: {e}")
-            st.stop()
-else:
-    # Use dummy data if no session (Optional: better to just stop)
-    st.info("Please configure Snowflake session to view data.")
-    st.stop()
+# Load Data
+with st.spinner("Loading analytics data..."):
+    try:
+        # Loaders now handle None session internally by returning empty DataFrames
+        df_jobs = load_job_timeliness(session, start_date, end_date)
+        df_sources = load_sources(session, start_date, end_date)
+        df_uniqueness = load_uniqueness(session, start_date, end_date)
+        df_integrity = load_integrity(session, start_date, end_date)
+    except Exception as e:
+        st.error(f"Error loading data: {e}")
+        st.stop()
+
+if session is None:
+    st.info("ℹ️ Running in View Mode (No Snowflake Connection). Showing layout with empty data.")
 
 # --- 2. DATA PROCESSING ---
 if not df_jobs.empty:
