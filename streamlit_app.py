@@ -16,10 +16,10 @@ import os
 # Ensure we can import modules if running from root
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from services.data_loader import *
-from processing.transformations import *
-from components.charts import *
-from utils.anomaly import *
+from data_loader import *
+from transformations import *
+from charts import *
+from anomaly import *
 
 st.set_page_config(page_title="Pipeline Health Dashboard", layout="wide")
 st.title("Pipeline Health Dashboard")
