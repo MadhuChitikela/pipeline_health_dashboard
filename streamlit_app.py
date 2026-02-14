@@ -229,7 +229,7 @@ colA, colB = st.columns([1,1])
 with colA:
     st.markdown("### Data Quality Risk & Stability")
     if not df_uniqueness.empty:
-         st.dataframe(df_uniqueness[["PIPELINE_NAME", "SINK_TABLE", "DUPLICATE_COUNT", "DUPLICATE_PERCENT"]], use_container_width=True)
+         st.dataframe(df_uniqueness[["PIPELINE_NAME", "SINK_TABLE", "DUPLICATE_COUNT", "DUPLICATE_PERCENTAGE"]], use_container_width=True)
     else:
         st.info("No quality data.")
 
