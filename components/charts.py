@@ -3,17 +3,34 @@ import plotly.express as px
 
 
 
-def duration_trend_chart(df, theme="dark"):
-    # Theme Logic
-    if theme == "dark":
-        template = "plotly_dark"
-        bg_color = "#0E1117"
-        font_color = "white"
-    else:
-        template = "plotly_white"
-        bg_color = "#FFFFFF"
-        font_color = "black"
 
+def apply_theme_to_fig(fig, theme):
+    if theme == "dark":
+        fig.update_layout(
+            template="plotly_dark",
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            font=dict(color="#E6EDF3", family="Inter, sans-serif"),
+            hoverlabel=dict(bgcolor="#161B22", bordercolor="#30363D"),
+            legend=dict(font=dict(color="#E6EDF3")),
+            xaxis=dict(gridcolor="rgba(255,255,255,0.1)", zerolinecolor="rgba(255,255,255,0.1)"),
+            yaxis=dict(gridcolor="rgba(255,255,255,0.1)", zerolinecolor="rgba(255,255,255,0.1)")
+        )
+    else:
+        fig.update_layout(
+            template="plotly_white",
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            font=dict(color="#1E293B", family="Inter, sans-serif"),
+            hoverlabel=dict(bgcolor="white", bordercolor="#E2E8F0"),
+            legend=dict(font=dict(color="#1E293B")),
+            xaxis=dict(gridcolor="rgba(0,0,0,0.06)", zerolinecolor="rgba(0,0,0,0.06)"),
+            yaxis=dict(gridcolor="rgba(0,0,0,0.06)", zerolinecolor="rgba(0,0,0,0.06)")
+        )
+    return fig
+
+
+def duration_trend_chart(df, theme="dark"):
     if df.empty:
         fig = px.line(title="Job Duration Trend (No Data)")
     else:
@@ -22,29 +39,13 @@ def duration_trend_chart(df, theme="dark"):
             x="WEEK",
             y="DURATION_MINUTES",
             color="PIPELINE_NAME",
-            title="Job Duration Trend"
+            title="Job Duration Trend",
+            color_discrete_sequence=["#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6"]
         )
-
-    fig.update_layout(
-        template=template,
-        paper_bgcolor=bg_color,
-        plot_bgcolor=bg_color,
-        font=dict(color=font_color)
-    )
-    return fig
+    return apply_theme_to_fig(fig, theme)
 
 
 def sla_breach_chart(df, theme="dark"):
-    # Theme Logic
-    if theme == "dark":
-        template = "plotly_dark"
-        bg_color = "#0E1117"
-        font_color = "white"
-    else:
-        template = "plotly_white"
-        bg_color = "#FFFFFF"
-        font_color = "black"
-
     if df.empty:
         fig = px.bar(title="SLA Breach Count (No Data)")
     else:
@@ -53,29 +54,13 @@ def sla_breach_chart(df, theme="dark"):
             agg,
             x="PIPELINE_NAME",
             y="SLA_BREACH",
-            title="SLA Breach Count"
+            title="SLA Breach Count",
+            color_discrete_sequence=["#EF4444"]
         )
-    
-    fig.update_layout(
-        template=template,
-        paper_bgcolor=bg_color,
-        plot_bgcolor=bg_color,
-        font=dict(color=font_color)
-    )
-    return fig
+    return apply_theme_to_fig(fig, theme)
 
 
 def health_score_chart(df, theme="dark"):
-    # Theme Logic
-    if theme == "dark":
-        template = "plotly_dark"
-        bg_color = "#0E1117"
-        font_color = "white"
-    else:
-        template = "plotly_white"
-        bg_color = "#FFFFFF"
-        font_color = "black"
-        
     if df.empty:
         fig = px.bar(title="Pipeline Health Score (No Data)")
     else:
@@ -84,29 +69,14 @@ def health_score_chart(df, theme="dark"):
             x="HEALTH_SCORE",
             y="PIPELINE_NAME",
             orientation="h",
-            title="Pipeline Health Score"
+            title="Pipeline Health Score",
+            color="HEALTH_SCORE",
+            color_continuous_scale="RdYlGn"
         )
-
-    fig.update_layout(
-        template=template,
-        paper_bgcolor=bg_color,
-        plot_bgcolor=bg_color,
-        font=dict(color=font_color)
-    )
-    return fig
+    return apply_theme_to_fig(fig, theme)
 
 
 def volume_trend_chart(df, theme="dark"):
-    # Theme Logic
-    if theme == "dark":
-        template = "plotly_dark"
-        bg_color = "#0E1117"
-        font_color = "white"
-    else:
-        template = "plotly_white"
-        bg_color = "#FFFFFF"
-        font_color = "black"
-
     if df.empty:
         fig = px.bar(title="Data Volume Trend (No Data)")
     else:
@@ -117,13 +87,7 @@ def volume_trend_chart(df, theme="dark"):
             x="PIPELINE_START_TIME",
             y="ROW_COUNT",
             color="PIPELINE_NAME",
-            title="Daily Row Count Processed"
+            title="Daily Row Count Processed",
+            color_discrete_sequence=["#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6"]
         )
-
-    fig.update_layout(
-        template=template,
-        paper_bgcolor=bg_color,
-        plot_bgcolor=bg_color,
-        font=dict(color=font_color)
-    )
-    return fig
+    return apply_theme_to_fig(fig, theme)

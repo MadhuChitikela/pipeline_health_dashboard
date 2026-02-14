@@ -45,81 +45,103 @@ with header_right:
 # Set compatibility variable for charts (lowercase for consistency)
 theme_choice = "dark" if st.session_state.theme_mode == "dark" else "light"
 
-# ---- DYNAMIC CSS ----
+# ---- DYNAMIC CSS (Glassmorphism) ----
 if st.session_state.theme_mode == "dark":
-    bg_color = "#0E1117"
-    card_bg = "#161B22"
-    text_color = "#FFFFFF"
-    secondary_text = "#A0AEC0"
-    border_color = "#2D3748"
-    button_bg = "#1F2937"
+    bg_gradient = "#0B1220"
+    card_bg = "rgba(22, 27, 34, 0.85)"
+    text_color = "#E6EDF3"
+    border_color = "rgba(255, 255, 255, 0.1)"
+    accent_color = "#3B82F6"
+    metric_bg = "#161B22"
 else:
-    bg_color = "#FFFFFF"
-    card_bg = "#F3F4F6"
-    text_color = "#000000"
-    secondary_text = "#4A5568"
-    border_color = "#E2E8F0"
-    button_bg = "#E5E7EB"
+    bg_gradient = "linear-gradient(135deg, #E3F2FD 0%, #F8FAFC 100%)"
+    card_bg = "rgba(255, 255, 255, 0.65)"
+    text_color = "#1E293B"
+    border_color = "rgba(255, 255, 255, 0.4)"
+    accent_color = "#2563EB"
+    metric_bg = "rgba(255, 255, 255, 0.6)"
 
 st.markdown(f"""
 <style>
     .stApp {{
-        background-color: {bg_color};
+        background: {bg_gradient};
         color: {text_color};
     }}
 
-    h1, h2, h3, h4, h5, h6 {{
+    h1, h2, h3, h4, h5, h6, p, label {{
         color: {text_color} !important;
     }}
 
-    p, span, label, div[data-baseweb="tab-list"] {{
-        color: {text_color} !important;
-    }}
-
+    /* Glassmorphism Metric Cards */
     div[data-testid="stMetric"] {{
-        background-color: {card_bg};
+        background: {metric_bg};
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 16px;
         padding: 20px;
-        border-radius: 12px;
         border: 1px solid {border_color};
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }}
 
     div[data-testid="stMetricLabel"] {{
-        color: {secondary_text} !important;
+        color: {text_color} !important;
+        opacity: 0.8;
         font-weight: 600;
     }}
 
     div[data-testid="stMetricValue"] {{
-        color: {text_color} !important;
+        color: {accent_color} !important;
     }}
 
-    .stButton button {{
-        background-color: {button_bg};
+    /* Tabs Styling */
+    button[data-baseweb="tab"] {{
         color: {text_color};
-        border-radius: 8px;
-        border: none;
-        border: 1px solid {border_color};
+        background-color: transparent;
     }}
     
-    /* Table Styling Adaptation */
+    /* Button Styling */
+    .stButton button {{
+        background: {accent_color};
+        color: white;
+        border-radius: 12px;
+        border: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }}
+    .stButton button:hover {{
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.4);
+    }}
+
+    /* DataFrame Container */
     [data-testid="stDataFrame"] {{
-        background-color: {card_bg};
+        background: {card_bg};
+        backdrop-filter: blur(12px);
+        border-radius: 12px;
+        padding: 10px;
         border: 1px solid {border_color};
     }}
 </style>
 """, unsafe_allow_html=True)
 
-# Helper for Table Styling
+# Helper for Enhanced Table Styling
 def style_table(df, theme):
     if theme == "dark":
-        return df.style.set_properties(**{
-            "background-color": "#161B22",
-            "color": "white",
-            "border-color": "#2D3748"
+        return df.style.set_table_styles(
+            [{"selector": "th",
+              "props": [("background-color", "#161B22"), ("color", "#E6EDF3"), ("border-bottom", "2px solid #30363D")]}]
+        ).set_properties(**{
+            "background-color": "#0D1117",
+            "color": "#E6EDF3",
+            "border-color": "#30363D"
         })
     else:
-        return df.style.set_properties(**{
-            "background-color": "white",
-            "color": "black",
+        return df.style.set_table_styles(
+            [{"selector": "th",
+              "props": [("background-color", "#E3F2FD"), ("color", "#1E293B"), ("border-bottom", "2px solid #BFDBFE")]}]
+        ).set_properties(**{
+            "background-color": "rgba(255, 255, 255, 0.8)",
+            "color": "#1E293B",
             "border-color": "#E2E8F0"
         })
 
