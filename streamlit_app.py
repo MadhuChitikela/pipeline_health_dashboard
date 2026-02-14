@@ -221,6 +221,28 @@ with col_right:
 
 st.markdown("---")
 
+# --- VOLUME SECTION ---
+st.markdown('<div class="section-title">Data Volume & Throughput</div>', unsafe_allow_html=True)
+col_vol1, col_vol2 = st.columns([1, 2])
+
+with col_vol1:
+    st.markdown("### Total Data Processed")
+    if not df_sources.empty:
+        total_rows = df_sources["ROW_COUNT"].sum()
+        total_gb = df_sources["BYTES"].sum() / (1024**3)
+        st.markdown(kpi_card("Total Rows", f"{total_rows:,.0f}", "#8b5cf6"), unsafe_allow_html=True)
+        st.markdown(kpi_card("Total Volume (GB)", f"{total_gb:.2f}", "#d946ef"), unsafe_allow_html=True)
+    else:
+        st.info("No source data.")
+
+with col_vol2:
+    if not df_sources.empty:
+        st.plotly_chart(volume_trend_chart(df_sources), use_container_width=True)
+    else:
+        st.info("No volume trend data.")
+
+st.markdown("---")
+
 # --- BOTTOM SECTION ---
 st.markdown('<div class="section-title">Weekly Performance Insights</div>', unsafe_allow_html=True)
 

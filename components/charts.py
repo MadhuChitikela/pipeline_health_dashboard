@@ -42,3 +42,20 @@ def health_score_chart(df):
         title="Pipeline Health Score"
     )
     return fig
+
+
+def volume_trend_chart(df):
+    if df.empty:
+        return px.bar(title="Data Volume Trend (No Data)")
+    
+    # Ensure date/time sorting if needed, but assuming df is passed correctly from app
+    # Group by PERIOD if available or just date
+    
+    fig = px.bar(
+        df,
+        x="PIPELINE_START_TIME",
+        y="ROW_COUNT",
+        color="PIPELINE_NAME",
+        title="Daily Row Count Processed"
+    )
+    return fig
