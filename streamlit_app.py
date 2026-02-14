@@ -34,62 +34,51 @@ def apply_theme(theme):
     if theme == "dark":
         st.markdown("""
         <style>
-        /* ===== GLOBAL ===== */
-        html, body, [class*="css"]  {
+
+        /* ===== FULL APP BACKGROUND FIX ===== */
+        .stApp {
+            background: linear-gradient(135deg, #0b1220, #0f1b33) !important;
+            color: #ffffff !important;
+        }
+
+        section[data-testid="stSidebar"] {
             background-color: #0b1220 !important;
-            color: #ffffff !important;
         }
 
-        h1, h2, h3, h4, h5, h6, .section-title {
+        /* ===== HEADINGS ===== */
+        h1, h2, h3, h4, h5, h6 {
             color: #ffffff !important;
-            text-shadow: 0 0 6px rgba(255,255,255,0.3);
-        }
-        
-        p, span, label, li, .section-subtitle {
-             color: #ffffff !important;
+            text-shadow: 0 0 10px rgba(255,255,255,0.4);
         }
 
-        /* ===== TOGGLE BUTTON FIX ===== */
+        p, span, label {
+            color: #e2e8f0 !important;
+        }
+
+        /* ===== TOGGLE BUTTON (VISIBLE IN DARK) ===== */
         div.stButton > button {
-            background: #ffffff !important;
-            color: #000000 !important;
+            background-color: #1e293b !important;
+            color: #ffffff !important;
+            border: 1px solid #3b82f6 !important;
+            box-shadow: 0 0 12px rgba(59,130,246,0.6);
             border-radius: 10px !important;
-            font-weight: 600;
         }
 
         /* ===== METRIC CARDS ===== */
-        div[data-testid="stMetric"], div[data-testid="metric-container"] {
+        div[data-testid="stMetric"] {
             background: linear-gradient(145deg, #111c33, #0b1220);
             border: 1px solid #1e3a8a;
             border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0,123,255,0.3);
+            box-shadow: 0 0 25px rgba(0,123,255,0.4);
             padding: 15px;
         }
-        
-        div[data-testid="stMetricValue"] {
-             color: #ffffff !important;
-        }
-        
-        div[data-testid="stMetricLabel"] label {
-             color: #bfdbfe !important;
-        }
 
-        /* ===== AG GRID TABLE DARK MODE ===== */
-        .stDataFrame, .stDataFrame div {
-            background-color: #0b1220 !important;
-            color: #ffffff !important;
-        }
-        
-        div[data-testid="stDataFrame"] {
-            background-color: #0b1220 !important;
-            color: #ffffff !important;
-        }
-
+        /* ===== AG GRID TABLE DARK FIX ===== */
         .ag-root-wrapper {
-            background-color: #0b1220 !important;
+            background-color: #0f172a !important;
+            border-radius: 12px !important;
             border: 1px solid #1e3a8a !important;
             box-shadow: 0 0 25px rgba(0,123,255,0.4);
-            border-radius: 12px;
         }
 
         .ag-header {
@@ -97,22 +86,22 @@ def apply_theme(theme):
         }
 
         .ag-header-cell-label {
-            color: #00c3ff !important;
+            color: #60a5fa !important;
             font-weight: 600;
         }
 
         .ag-cell {
-            background-color: #0b1220 !important;
+            background-color: #0f172a !important;
             color: #ffffff !important;
             border-bottom: 1px solid #1e293b !important;
         }
 
-        .ag-row:hover {
-            background-color: #1e3a8a !important;
+        .ag-row-odd, .ag-row-even {
+            background-color: #0f172a !important;
         }
 
-        .ag-row-odd, .ag-row-even {
-            background-color: #0b1220 !important;
+        .ag-row:hover {
+            background-color: #1e3a8a !important;
         }
 
         </style>
