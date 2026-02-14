@@ -30,16 +30,21 @@ if "theme_mode" not in st.session_state:
     st.session_state.theme_mode = "dark"
 
 # ---- HEADER & TOGGLE ----
-header_left, header_right = st.columns([9,1])
+# ---- HEADER & TOGGLE ----
+header_left, header_right = st.columns([10,1])
 
 with header_left:
     st.title("Pipeline Health Dashboard")
 
 with header_right:
     # Improved Button with Label
-    btn_label = "🌙 Dark" if st.session_state.theme_mode == "light" else "☀ Light"
-    if st.button(btn_label, key="theme_toggle", help="Toggle Theme"):
-        st.session_state.theme_mode = "dark" if st.session_state.theme_mode == "light" else "light"
+    if st.session_state.theme_mode == "dark":
+        toggle_icon = "🌙 Dark"
+    else:
+        toggle_icon = "☀️ Light"
+
+    if st.button(toggle_icon, key="theme_toggle", help="Toggle Theme"):
+        st.session_state.theme_mode = "light" if st.session_state.theme_mode == "dark" else "dark"
         st.rerun()
 
 # Set compatibility variable for charts (lowercase for consistency)
@@ -126,42 +131,40 @@ if st.session_state.theme_mode == "dark":
         text-shadow: 0 0 10px rgba(255,255,255,0.8) !important;
     }
 
-    /* DARK TABLE CONTAINER */
-    div[data-testid="stDataFrame"] {
+    /* FULL DARK TABLE OVERRIDE */
+    div[data-testid="stDataFrame"], div[data-testid="stDataFrame"] div {
         background-color: #0f172a !important;
-        border-radius: 12px;
-        padding: 10px;
-        box-shadow: 0 0 20px rgba(0,180,255,0.2);
+        color: #ffffff !important;
+        border: none !important;
     }
 
-    /* TABLE HEADER */
-    div[data-testid="stDataFrame"] thead tr th {
+    div[data-testid="stDataFrame"] table {
+        background-color: #0f172a !important;
+        border-collapse: collapse !important;
+    }
+
+    div[data-testid="stDataFrame"] th {
         background-color: #1e293b !important;
         color: #ffffff !important;
-        font-weight: 600;
-        border-bottom: 1px solid #334155 !important;
+        font-weight: 600 !important;
+        border: none !important;
     }
 
-    /* TABLE BODY CELLS */
-    div[data-testid="stDataFrame"] tbody tr td {
+    div[data-testid="stDataFrame"] td {
         background-color: #0f172a !important;
         color: #ffffff !important;
+        border: none !important;
         border-bottom: 1px solid #1e293b !important;
     }
 
-    /* INDEX COLUMN */
-    div[data-testid="stDataFrame"] tbody tr th {
+    div[data-testid="stDataFrame"] tr:hover td {
         background-color: #1e293b !important;
-        color: #ffffff !important;
     }
-    
-    /* REMOVE WHITE GRID */
-    .ag-theme-streamlit {
-        --ag-background-color: #0f172a !important;
-        --ag-foreground-color: #ffffff !important;
-        --ag-header-background-color: #1e293b !important;
-        --ag-header-foreground-color: #ffffff !important;
-        --ag-row-hover-color: #1e293b !important;
+
+    /* Remove white index column */
+    div[data-testid="stDataFrame"] div[class*="row-header"] {
+        background-color: #0f172a !important;
+        color: #ffffff !important;
     }
 
     /* Buttons (Dark Mode Style) */
@@ -239,29 +242,29 @@ else:
         font-weight: 600;
     }
 
-    /* LIGHT TABLE FIX */
-    div[data-testid="stDataFrame"] {
-        background: rgba(255,255,255,0.6) !important;
-        backdrop-filter: blur(10px);
-        border-radius: 12px;
-        padding: 10px;
-        box-shadow: 0 0 15px rgba(59,130,246,0.15);
+    /* FULL LIGHT TABLE OVERRIDE */
+    div[data-testid="stDataFrame"], div[data-testid="stDataFrame"] div {
+        background-color: white !important;
+        color: #1e293b !important;
+        border: none !important;
     }
-
-    div[data-testid="stDataFrame"] thead tr th {
-        background: rgba(59,130,246,0.15) !important;
+    
+    div[data-testid="stDataFrame"] th {
+        background-color: #e2e8f0 !important;
         color: #1e293b !important;
         font-weight: 600;
+        border: none !important;
     }
 
-    div[data-testid="stDataFrame"] tbody tr td {
-        background: rgba(255,255,255,0.4) !important;
+    div[data-testid="stDataFrame"] td {
+        background-color: white !important;
         color: #1e293b !important;
+        border: none !important;
+        border-bottom: 1px solid #e2e8f0 !important;
     }
 
-    div[data-testid="stDataFrame"] tbody tr th {
-        background: rgba(59,130,246,0.1) !important;
-        color: #1e293b !important;
+    div[data-testid="stDataFrame"] tr:hover td {
+        background-color: #f1f5f9 !important;
     }
 
     /* Buttons (Light Mode Style) */
