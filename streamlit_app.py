@@ -26,49 +26,68 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+# ---- THEME TOGGLE ----
+with st.sidebar:
+    st.subheader("⚙️ Settings")
+    theme_choice = st.radio("Theme Mode", ["Dark", "Light"], horizontal=True)
+
 # ---- Custom CSS ----
-st.markdown("""
+if theme_choice == "Dark":
+    bg_color = "#0e1117"
+    text_color = "white"
+    card_bg = "#161b22"
+    border_color = "#30363d"
+    title_color = "#4ea8de"
+else: # Light Mode
+    bg_color = "#ffffff"
+    text_color = "#000000"
+    card_bg = "#f0f2f6"
+    border_color = "#e5e7eb"
+    title_color = "#0369a1"
+
+st.markdown(f"""
 <style>
 
 /* Page background */
-.stApp {
-    background-color: #0e1117;
-    color: white;
-}
+.stApp {{
+    background-color: {bg_color};
+    color: {text_color};
+}}
 
 /* Section headers */
-.section-title {
+.section-title {{
     font-size: 26px;
     font-weight: 600;
-    color: #4ea8de;
+    color: {title_color};
     margin-bottom: 10px;
-}
+}}
 
 /* KPI Card */
-.kpi-card {
-    background-color: #161b22;
+.kpi-card {{
+    background-color: {card_bg};
     padding: 25px;
     border-radius: 12px;
-    box-shadow: 0px 4px 15px rgba(0,0,0,0.4);
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
     border-left: 6px solid #4ea8de;
     margin-bottom: 10px;
-}
+    border: 1px solid {border_color};
+}}
 
-.kpi-value {
+.kpi-value {{
     font-size: 40px;
     font-weight: bold;
-    color: #ffffff;
-}
+    color: {text_color};
+}}
 
-.kpi-title {
+.kpi-title {{
     font-size: 14px;
     text-transform: uppercase;
     color: #9ca3af;
     font-weight: 600;
-}
+}}
 
 /* Buttons */
-.stButton>button {
+.stButton>button {{
     border-radius: 25px;
     height: 45px;
     font-weight: 600;
@@ -76,19 +95,20 @@ st.markdown("""
     color: white;
     border: none;
     width: 100%;
-}
+}}
 
-.stButton>button:hover {
+.stButton>button:hover {{
     transform: scale(1.02);
     box-shadow: 0px 5px 15px rgba(58, 134, 255, 0.4);
-}
+}}
 
 /* Table styling */
-[data-testid="stDataFrame"] {
-    background-color: #161b22;
+[data-testid="stDataFrame"] {{
+    background-color: {card_bg};
     border-radius: 10px;
     padding: 10px;
-}
+    border: 1px solid {border_color};
+}}
 
 </style>
 """, unsafe_allow_html=True)
@@ -198,7 +218,7 @@ if not df_jobs.empty:
     tab_t1, tab_t2 = st.tabs(["📉 Duration Trend", "📋 Execution Log"])
     
     with tab_t1:
-        st.plotly_chart(duration_trend_chart(df_jobs), use_container_width=True)
+        st.plotly_chart(duration_trend_chart(df_jobs, theme_choice), use_container_width=True)
         
     with tab_t2:
         st.dataframe(
@@ -229,7 +249,7 @@ if not df_sources.empty:
     
     col_v1, col_v2 = st.columns([2, 1])
     with col_v1:
-        st.plotly_chart(volume_trend_chart(df_sources), use_container_width=True)
+        st.plotly_chart(volume_trend_chart(df_sources, theme_choice), use_container_width=True)
     with col_v2:
         st.markdown("### Source Details")
         st.dataframe(
