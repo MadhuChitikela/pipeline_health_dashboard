@@ -80,6 +80,25 @@ st.markdown(f"""
         color: {text_color} !important;
     }}
 
+    /* Section Titles - Enhanced Glow */
+    .section-title {{
+        font-size: 24px;
+        font-weight: 700;
+        margin-top: 30px;
+        margin-bottom: 5px;
+        color: {header_color} !important;
+        {glow_css}
+    }}
+
+    /* Section Subtitles */
+    .section-subtitle {{
+        font-size: 14px;
+        font-weight: 400;
+        color: {text_color} !important;
+        opacity: 0.8;
+        margin-bottom: 15px;
+    }}
+
     /* Headers with Premium Glow */
     h1, h2, h3, section[data-testid="stAppViewContainer"] h1, 
     section[data-testid="stAppViewContainer"] h2, 
@@ -206,15 +225,19 @@ df_integrity = standardize_datetimes(df_integrity, ["PIPELINE_START_TIME"])
 
 
 # --- UI HEADER ---
-st.markdown('<div class="section-title">Pipeline Operations Dashboard</div>', unsafe_allow_html=True)
-st.caption("Monitor Execution Health • Detect Failures • Track Data Quality")
+st.markdown("""
+<div class="section-title">Pipeline Operations Dashboard</div>
+<div class="section-subtitle">Monitor Execution Health • Detect Failures • Track Data Quality</div>
+""", unsafe_allow_html=True)
 st.markdown("---")
 
 
 # --- HELPER COMPONENT ---
 # --- 1️⃣ EXECUTION TIMELINESS ---
-st.markdown('<div class="section-title">1️⃣ Execution Timeliness</div>', unsafe_allow_html=True)
-st.caption("Audit of job duration, execution status, and SLA adherence based on DIM_PIPELINE_JOB_TIMELINESS.")
+st.markdown("""
+<div class="section-title">1️⃣ Execution Timeliness</div>
+<div class="section-subtitle">Audit of job duration, execution status, and SLA adherence based on DIM_PIPELINE_JOB_TIMELINESS.</div>
+""", unsafe_allow_html=True)
 
 if not df_jobs.empty:
     # Strict Metrics: Raw Counts
@@ -257,8 +280,10 @@ else:
 st.markdown("---")
 
 # --- 2️⃣ DATA VOLUME & THROUGHPUT ---
-st.markdown('<div class="section-title">2️⃣ Data Volume & Throughput</div>', unsafe_allow_html=True)
-st.caption("Tracking row counts and data size processed by pipelines.")
+st.markdown("""
+<div class="section-title">2️⃣ Data Volume & Throughput</div>
+<div class="section-subtitle">Tracking row counts and data size processed by pipelines.</div>
+""", unsafe_allow_html=True)
 
 if not df_sources.empty:
     total_rows = df_sources["ROW_COUNT"].sum()
@@ -287,8 +312,10 @@ else:
 st.markdown("---")
 
 # --- 3️⃣ OUTPUT COMPLETENESS ---
-st.markdown('<div class="section-title">3️⃣ Output Completeness</div>', unsafe_allow_html=True)
-st.caption("Verifying data landing in sink tables.")
+st.markdown("""
+<div class="section-title">3️⃣ Output Completeness</div>
+<div class="section-subtitle">Verifying data landing in sink tables.</div>
+""", unsafe_allow_html=True)
 
 if not df_outputs.empty:
     st.dataframe(
@@ -304,8 +331,10 @@ else:
 st.markdown("---")
 
 # --- 4️⃣ UNIQUENESS & DUPLICATION RISK ---
-st.markdown('<div class="section-title">4️⃣ Uniqueness & Duplication Risk</div>', unsafe_allow_html=True)
-st.caption("Monitoring duplicate records against defined thresholds.")
+st.markdown("""
+<div class="section-title">4️⃣ Uniqueness & Duplication Risk</div>
+<div class="section-subtitle">Monitoring duplicate records against defined thresholds.</div>
+""", unsafe_allow_html=True)
 
 if not df_uniqueness.empty:
     # Highlight high risk
@@ -334,8 +363,10 @@ else:
 st.markdown("---")
 
 # --- 5️⃣ DATA INTEGRITY ---
-st.markdown('<div class="section-title">5️⃣ Data Integrity (Null Monitoring)</div>', unsafe_allow_html=True)
-st.caption("Tracking null values in critical columns.")
+st.markdown("""
+<div class="section-title">5️⃣ Data Integrity (Null Monitoring)</div>
+<div class="section-subtitle">Tracking null values in critical columns.</div>
+""", unsafe_allow_html=True)
 
 if not df_integrity.empty:
     total_nulls = df_integrity["NULL_COUNT"].sum()
