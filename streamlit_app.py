@@ -54,7 +54,6 @@ if st.session_state.theme_mode == "dark":
     metric_bg = "#111C33"
     header_color = "#FFFFFF"
     
-    # --- DARK MODE STYLES ---
     st.markdown("""
     <style>
     /* FULL PAGE BACKGROUND */
@@ -63,14 +62,39 @@ if st.session_state.theme_mode == "dark":
         color: #FFFFFF !important;
     }
 
-    /* ALL TEXT FORCE WHITE */
-    h1, h2, h3, h4, h5, h6, .section-title {
-        color: #FFFFFF !important;
-        text-shadow: 0 0 10px rgba(255,255,255,0.4) !important;
+    /* SIDEBAR BACKGROUND */
+    section[data-testid="stSidebar"] {
+        background-color: #0B1426 !important;
+        border-right: 1px solid #1F2937;
     }
-    
-    p, span, div, label, li {
+
+    /* ALL TEXT FORCE WHITE */
+    h1, h2, h3, h4, h5, h6, .section-title,
+    p, span, div, label, li, button {
         color: #FFFFFF !important;
+    }
+
+    /* ALERTS (st.info) */
+    div[data-testid="stAlert"] {
+        background-color: rgba(29, 78, 216, 0.2) !important;
+        border: 1px solid rgba(29, 78, 216, 0.5) !important;
+        color: #FFFFFF !important;
+    }
+    div[data-testid="stAlert"] p {
+        color: #FFFFFF !important;
+    }
+
+    /* TABS */
+    button[data-baseweb="tab"] {
+        background-color: transparent !important;
+        color: #94fab9 !important; /* Slight tint for inactive */
+    }
+    div[data-baseweb="tab-highlight"] {
+        background-color: #3B82F6 !important;
+    }
+    button[data-baseweb="tab"][aria-selected="true"] {
+        color: #FFFFFF !important;
+        font-weight: 700 !important;
     }
 
     /* Section Subtitles - Slight Dim */
@@ -261,15 +285,15 @@ def style_table(df, theme):
         return df.style.set_table_styles(
             [{"selector": "th",
               "props": [
-                  ("background-color", "#16284B"), 
-                  ("color", "#FFFFFF"), 
+                  ("background-color", "#1e293b"), 
+                  ("color", "#ffffff"), 
                   ("font-weight", "600"),
-                  ("border-bottom", "2px solid #2D3748")
+                  ("border-bottom", "1px solid #334155")
               ]}]
         ).set_properties(**{
-            "background-color": "#111C33",
-            "color": "#FFFFFF",
-            "border-color": "#1F2937"
+            "background-color": "#0f172a",
+            "color": "#ffffff",
+            "border-color": "#1e293b"
         })
     else:
         return df.style.set_table_styles(
