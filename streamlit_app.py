@@ -29,267 +29,175 @@ st.set_page_config(
 if "theme_mode" not in st.session_state:
     st.session_state.theme_mode = "dark"
 
-# ---- HEADER & TOGGLE ----
-# ---- HEADER & TOGGLE ----
-header_left, header_right = st.columns([10,1])
+# ---- THEME LOGIC ----
+def apply_theme(theme):
+    if theme == "dark":
+        st.markdown("""
+        <style>
+        /* ===== GLOBAL ===== */
+        html, body, [class*="css"]  {
+            background-color: #0b1220 !important;
+            color: #ffffff !important;
+        }
 
-with header_left:
+        h1, h2, h3, h4, h5, h6, .section-title {
+            color: #ffffff !important;
+            text-shadow: 0 0 6px rgba(255,255,255,0.3);
+        }
+        
+        p, span, label, li, .section-subtitle {
+             color: #ffffff !important;
+        }
+
+        /* ===== TOGGLE BUTTON FIX ===== */
+        div.stButton > button {
+            background: #ffffff !important;
+            color: #000000 !important;
+            border-radius: 10px !important;
+            font-weight: 600;
+        }
+
+        /* ===== METRIC CARDS ===== */
+        div[data-testid="stMetric"], div[data-testid="metric-container"] {
+            background: linear-gradient(145deg, #111c33, #0b1220);
+            border: 1px solid #1e3a8a;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,123,255,0.3);
+            padding: 15px;
+        }
+        
+        div[data-testid="stMetricValue"] {
+             color: #ffffff !important;
+        }
+        
+        div[data-testid="stMetricLabel"] label {
+             color: #bfdbfe !important;
+        }
+
+        /* ===== AG GRID TABLE DARK MODE ===== */
+        .stDataFrame, .stDataFrame div {
+            background-color: #0b1220 !important;
+            color: #ffffff !important;
+        }
+        
+        div[data-testid="stDataFrame"] {
+            background-color: #0b1220 !important;
+            color: #ffffff !important;
+        }
+
+        .ag-root-wrapper {
+            background-color: #0b1220 !important;
+            border: 1px solid #1e3a8a !important;
+            box-shadow: 0 0 25px rgba(0,123,255,0.4);
+            border-radius: 12px;
+        }
+
+        .ag-header {
+            background-color: #111c33 !important;
+        }
+
+        .ag-header-cell-label {
+            color: #00c3ff !important;
+            font-weight: 600;
+        }
+
+        .ag-cell {
+            background-color: #0b1220 !important;
+            color: #ffffff !important;
+            border-bottom: 1px solid #1e293b !important;
+        }
+
+        .ag-row:hover {
+            background-color: #1e3a8a !important;
+        }
+
+        .ag-row-odd, .ag-row-even {
+            background-color: #0b1220 !important;
+        }
+
+        </style>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown("""
+        <style>
+        /* ===== GLOBAL LIGHT ===== */
+        html, body, [class*="css"]  {
+            background-color: #f4f9ff !important;
+            color: #000000 !important;
+        }
+
+        h1, h2, h3, h4, h5, h6, .section-title {
+            color: #0d3b66 !important;
+        }
+        
+        p, span, label, li, .section-subtitle {
+             color: #1e293b !important;
+        }
+
+        /* ===== TOGGLE BUTTON FIX ===== */
+        div.stButton > button {
+            background: #0d3b66 !important;
+            color: white !important;
+            border-radius: 10px !important;
+            font-weight: 600;
+        }
+
+        /* ===== METRIC CARDS GLASS EFFECT ===== */
+        div[data-testid="stMetric"], div[data-testid="metric-container"] {
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(12px);
+            border-radius: 15px;
+            border: 1px solid rgba(0,123,255,0.3);
+            box-shadow: 0 8px 32px rgba(0,123,255,0.2);
+            padding: 15px;
+        }
+        
+        div[data-testid="stMetricValue"] {
+             color: #0d3b66 !important;
+        }
+
+        /* ===== TABLE LIGHT MODE ===== */
+        .ag-root-wrapper {
+            background-color: #ffffff !important;
+            border-radius: 12px;
+            border: 1px solid #d0e3ff !important;
+            box-shadow: 0 0 20px rgba(0,123,255,0.2);
+        }
+
+        .ag-header {
+            background-color: #e6f2ff !important;
+        }
+
+        .ag-header-cell-label {
+            color: #0d3b66 !important;
+            font-weight: 600;
+        }
+
+        .ag-cell {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            border-bottom: 1px solid #e6f2ff !important;
+        }
+
+        .ag-row:hover {
+            background-color: #d6eaff !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+
+# ---- HEADER & TOGGLE ----
+col1, col2 = st.columns([10,1])
+
+with col1:
     st.title("Pipeline Health Dashboard")
 
-with header_right:
-    # Improved Button with Label
-    if st.session_state.theme_mode == "dark":
-        toggle_icon = "🌙 Dark"
-    else:
-        toggle_icon = "☀️ Light"
-
-    if st.button(toggle_icon, key="theme_toggle", help="Toggle Theme"):
-        st.session_state.theme_mode = "light" if st.session_state.theme_mode == "dark" else "dark"
+with col2:
+    if st.button("🌙" if st.session_state.theme_mode=="dark" else "☀️", key="theme_toggle_btn"):
+        st.session_state.theme_mode = "light" if st.session_state.theme_mode=="dark" else "dark"
         st.rerun()
 
-# Set compatibility variable for charts (lowercase for consistency)
-theme_choice = "dark" if st.session_state.theme_mode == "dark" else "light"
-
-# ---- DYNAMIC CSS (Definitive Force Override) ----
-if st.session_state.theme_mode == "dark":
-    bg_color = "#0B1426"
-    text_color = "#FFFFFF"
-    card_bg = "#111C33"
-    border_color = "#1F2937"
-    metric_bg = "#111C33"
-    header_color = "#FFFFFF"
-    
-    st.markdown("""
-    <style>
-    /* FULL PAGE BACKGROUND */
-    .stApp, section[data-testid="stAppViewContainer"], section.main > div {
-        background-color: #0B1426 !important;
-        color: #FFFFFF !important;
-    }
-
-    /* SIDEBAR BACKGROUND */
-    section[data-testid="stSidebar"] {
-        background-color: #0B1426 !important;
-        border-right: 1px solid #1F2937;
-    }
-
-    /* ALL TEXT FORCE WHITE */
-    h1, h2, h3, h4, h5, h6, .section-title,
-    p, span, div, label, li, button {
-        color: #FFFFFF !important;
-    }
-
-    /* ALERTS (st.info) */
-    div[data-testid="stAlert"] {
-        background-color: rgba(29, 78, 216, 0.2) !important;
-        border: 1px solid rgba(29, 78, 216, 0.5) !important;
-        color: #FFFFFF !important;
-    }
-    div[data-testid="stAlert"] p {
-        color: #FFFFFF !important;
-    }
-
-    /* TABS */
-    button[data-baseweb="tab"] {
-        background-color: transparent !important;
-        color: #94fab9 !important; /* Slight tint for inactive */
-    }
-    div[data-baseweb="tab-highlight"] {
-        background-color: #3B82F6 !important;
-    }
-    button[data-baseweb="tab"][aria-selected="true"] {
-        color: #FFFFFF !important;
-        font-weight: 700 !important;
-    }
-
-    /* Section Subtitles - Slight Dim */
-    .section-subtitle {
-        color: #E2E8F0 !important;
-        opacity: 0.9;
-    }
-
-    /* Metric Cards - Gradient & Shadow */
-    div[data-testid="stMetric"], div[data-testid="metric-container"] {
-        background: linear-gradient(145deg, #101C33, #0E1A30) !important;
-        border: 1px solid rgba(0,150,255,0.3) !important;
-        border-radius: 14px !important;
-        padding: 20px !important;
-        box-shadow: 0 0 25px rgba(0,120,255,0.2) !important;
-    }
-
-    /* Metric Labels */
-    div[data-testid="stMetricLabel"] label {
-        color: #BFD9FF !important;
-        font-weight: 600 !important;
-    }
-
-    /* Metric Values */
-    div[data-testid="stMetricValue"] {
-        color: #FFFFFF !important;
-        font-size: 28px !important;
-        font-weight: 700 !important;
-        text-shadow: 0 0 10px rgba(255,255,255,0.8) !important;
-    }
-
-    /* ===== TABLE FULL DARK FIX ===== */
-    div[data-testid="stDataFrame"] {
-        background-color: #0b1c33 !important;
-        border-radius: 12px !important;
-        overflow: hidden;
-        border: 1px solid rgba(0,150,255,0.2) !important;
-    }
-
-    div[data-testid="stDataFrame"] table {
-        background-color: #0b1c33 !important;
-        color: #ffffff !important;
-        border-collapse: collapse !important;
-    }
-
-    div[data-testid="stDataFrame"] th {
-        background-color: #122c4d !important;
-        color: #ffffff !important;
-        border: none !important;
-        font-weight: 600 !important;
-    }
-
-    div[data-testid="stDataFrame"] td {
-        background-color: #0b1c33 !important;
-        color: #ffffff !important;
-        border: none !important;
-    }
-
-    div[data-testid="stDataFrame"] tr {
-        border-bottom: 1px solid rgba(255,255,255,0.05) !important;
-    }
-    
-    div[data-testid="stDataFrame"] tr:hover td {
-        background-color: #122c4d !important;
-    }
-
-    /* Remove white grid lines/index */
-    .stDataFrame div {
-        border: none !important;
-    }
-    div[data-testid="stDataFrame"] div[class*="row-header"] {
-        background-color: #0b1c33 !important;
-        color: #ffffff !important;
-    }
-
-    /* Buttons (Dark Mode Style) */
-    .stButton > button {
-        background: linear-gradient(135deg, #1f2937, #111827) !important;
-        color: white !important;
-        border-radius: 8px;
-        border: 1px solid rgba(255,255,255,0.3);
-        font-weight: 600;
-        box-shadow: 0 0 12px rgba(255,255,255,0.3);
-    }
-    .stButton > button:hover {
-        filter: brightness(1.2);
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-else:
-    # --- LIGHT MODE STYLES ---
-    bg_color = "#F1F5F9"
-    text_color = "#0F172A"
-    card_bg = "rgba(255, 255, 255, 0.75)"
-    border_color = "#CBD5E1"
-    metric_bg = "#FFFFFF"
-    header_color = "#2563EB"
-    
-    st.markdown("""
-    <style>
-    /* Main Background */
-    .stApp, section[data-testid="stAppViewContainer"] {
-        background-color: #F1F5F9;
-    }
-
-    /* Global Text */
-    section[data-testid="stAppViewContainer"] *, 
-    section[data-testid="stAppViewContainer"] p, 
-    section[data-testid="stAppViewContainer"] span, 
-    section[data-testid="stAppViewContainer"] label, 
-    section[data-testid="stAppViewContainer"] li {
-        color: #0F172A !important;
-    }
-
-    /* Headings */
-    h1, h2, h3, h4, h5, .section-title {
-        color: #0F172A !important;
-        text-shadow: none !important;
-        font-weight: 700 !important;
-    }
-
-    /* Subtitles */
-    .section-subtitle {
-        color: #475569 !important;
-        font-weight: 400;
-    }
-
-    /* Metric Cards */
-    div[data-testid="stMetric"] {
-        background-color: #FFFFFF !important;
-        border: 1px solid #CBD5E1;
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    }
-    
-    /* Metric Values */
-    div[data-testid="stMetricValue"] {
-        color: #2563EB !important;
-        font-size: 28px !important;
-        font-weight: 700 !important;
-    }
-
-    /* Metric Labels */
-    div[data-testid="stMetricLabel"] label {
-        color: #64748B !important;
-        font-weight: 600;
-    }
-
-    /* FULL LIGHT TABLE OVERRIDE */
-    div[data-testid="stDataFrame"], div[data-testid="stDataFrame"] div {
-        background-color: white !important;
-        color: #1e293b !important;
-        border: none !important;
-    }
-    
-    div[data-testid="stDataFrame"] th {
-        background-color: #e2e8f0 !important;
-        color: #1e293b !important;
-        font-weight: 600;
-        border: none !important;
-    }
-
-    div[data-testid="stDataFrame"] td {
-        background-color: white !important;
-        color: #1e293b !important;
-        border: none !important;
-        border-bottom: 1px solid #e2e8f0 !important;
-    }
-
-    div[data-testid="stDataFrame"] tr:hover td {
-        background-color: #f1f5f9 !important;
-    }
-
-    /* Buttons (Light Mode Style) */
-    .stButton > button {
-        background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
-        color: white !important;
-        border-radius: 8px;
-        box-shadow: 0 0 12px rgba(59,130,246,0.4);
-        border: none;
-        font-weight: 600;
-    }
-    .stButton > button:hover {
-        filter: brightness(1.1);
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
+apply_theme(st.session_state.theme_mode)
+theme_choice = st.session_state.theme_mode
 # Helper for Enhanced Table Styling
 def style_table(df, theme):
     if theme == "dark":
