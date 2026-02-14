@@ -25,19 +25,37 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# ---- THEME TOGGLE ----
-with st.sidebar:
-    st.subheader("⚙️ Settings")
-    theme_choice = st.radio("Theme Mode", ["Dark", "Light"], horizontal=True)
+# ---- THEME STATE MANAGEMENT ----
+if "theme_mode" not in st.session_state:
+    st.session_state.theme_mode = "dark"
 
-# ---- Custom CSS ----
-if theme_choice == "Dark":
+# ---- HEADER & TOGGLE ----
+header_left, header_right = st.columns([9,1])
+
+with header_left:
+    st.title("Pipeline Health Dashboard")
+
+with header_right:
+    # Simple top-right toggle
+    if st.button(
+        "🌙" if st.session_state.theme_mode == "dark" else "☀️",
+        key="theme_toggle",
+        help="Toggle Theme"
+    ):
+        st.session_state.theme_mode = "light" if st.session_state.theme_mode == "dark" else "dark"
+        st.rerun()
+
+# Set compatibility variable for charts
+theme_choice = "Dark" if st.session_state.theme_mode == "dark" else "Light"
+
+# ---- DYNAMIC CSS ----
+if st.session_state.theme_mode == "dark":
     bg_color = "#0e1117"
     text_color = "white"
     card_bg = "#161b22"
     border_color = "#30363d"
     title_color = "#4ea8de"
-else: # Light Mode
+else:
     bg_color = "#ffffff"
     text_color = "#000000"
     card_bg = "#f0f2f6"
@@ -46,7 +64,6 @@ else: # Light Mode
 
 st.markdown(f"""
 <style>
-
 /* Page background */
 .stApp {{
     background-color: {bg_color};
@@ -61,44 +78,26 @@ st.markdown(f"""
     margin-bottom: 10px;
 }}
 
-/* KPI Card */
-.kpi-card {{
+/* Metrics Styling */
+div[data-testid="stMetric"] {{
     background-color: {card_bg};
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
-    border-left: 6px solid #4ea8de;
-    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 10px;
     border: 1px solid {border_color};
 }}
 
-.kpi-value {{
-    font-size: 40px;
-    font-weight: bold;
+div[data-testid="stMetricLabel"] {{
+    font-weight: 600;
     color: {text_color};
 }}
 
-.kpi-title {{
-    font-size: 14px;
-    text-transform: uppercase;
-    color: #9ca3af;
-    font-weight: 600;
+div[data-testid="stMetricValue"] {{
+    color: {title_color};
 }}
 
-/* Buttons */
-.stButton>button {{
-    border-radius: 25px;
-    height: 45px;
-    font-weight: 600;
-    background: linear-gradient(90deg,#4ea8de,#3a86ff);
-    color: white;
-    border: none;
-    width: 100%;
-}}
-
-.stButton>button:hover {{
-    transform: scale(1.02);
-    box-shadow: 0px 5px 15px rgba(58, 134, 255, 0.4);
+/* Tabs Styling */
+button[data-baseweb="tab"] {{
+    color: {text_color};
 }}
 
 /* Table styling */
@@ -112,7 +111,7 @@ st.markdown(f"""
 </style>
 """, unsafe_allow_html=True)
 
-st.title("Pipeline Health Dashboard")
+
 
 session = None
 try:
