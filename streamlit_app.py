@@ -178,86 +178,122 @@ with col3:
 
 st.divider()
 
-# --- MAIN LAYOUT ---
-col_left, col_right = st.columns([2, 1])
+# --- 1️⃣ EXECUTION TIMELINESS ---
+st.markdown('<div class="section-title">1️⃣ Execution Timeliness</div>', unsafe_allow_html=True)
+st.caption("Monitoring job duration, status, and SLA adherence.")
 
-with col_left:
-    st.markdown('<div class="section-title">Execution Overview</div>', unsafe_allow_html=True)
+if not df_jobs.empty:
+    col1, col2, col3, col4 = st.columns(4)
     
-    # Styled DataFrame
-    if not df_jobs.empty:
-        # Select relevant stats
-        display_df = df_jobs[[
-            "PIPELINE_NAME", "RUN_ID", "JOB_START_TIME", "DURATION_MINUTES", "STATUS", "SLA_BREACH"
-        ]].copy()
+    total_runs = len(df_jobs)
+    success_runs = len(df_jobs[df_jobs["STATUS"] == "PASS"])
+    fail_runs = len(df_jobs[df_jobs["STATUS"] == "FAIL"])
+    sla_breaches = df_jobs["SLA_BREACH"].sum()
+
+    col1.metric("Total Pipeline Runs", total_runs)
+    col2.metric("Successful Runs", success_runs, delta=f"{success_runs/total_runs:.0%}" if total_runs > 0 else None)
+    col3.metric("Failed Runs", fail_runs, delta=f"-{fail_runs}", delta_color="inverse")
+    col4.metric("SLA Breaches", int(sla_breaches), delta=f"-{int(sla_breaches)}" if sla_breaches > 0 else "Stable", delta_color="inverse")
+
+    tab_t1, tab_t2 = st.tabs(["📉 Duration Trend", "📋 Execution Log"])
+    
+    with tab_t1:
+        st.plotly_chart(duration_trend_chart(df_jobs), use_container_width=True)
         
-        # Color styling
+    with tab_t2:
         st.dataframe(
-            display_df.style.applymap(
-                lambda v: "color: #22c55e; font-weight:bold;" if v == "PASS" 
-                else "color: #ef4444; font-weight:bold;" if v == "FAIL" 
-                else ""
+            df_jobs[[
+                "PIPELINE_NAME", "JOB_NAME", "STATUS", "JOB_START_TIME", "DURATION_MINUTES", "SLA_BREACH"
+            ]].style.applymap(
+                lambda v: "color: #22c55e; font-weight:bold;" if v == "PASS" else "color: #ef4444; font-weight:bold;" if v == "FAIL" else ""
                 , subset=["STATUS"]
-            ).applymap(
-                lambda v: "color: #ef4444; font-weight:bold;" if v == True 
-                else "color: #94a3b8;" if v == False 
-                else ""
-                , subset=["SLA_BREACH"]
-            ).format({
-                "DURATION_MINUTES": "{:.1f} m"
-            }),
+            ),
+            use_container_width=True
+        )
+else:
+    st.info("No execution data available.")
+
+st.markdown("---")
+
+# --- 2️⃣ DATA VOLUME & THROUGHPUT ---
+st.markdown('<div class="section-title">2️⃣ Data Volume & Throughput</div>', unsafe_allow_html=True)
+st.caption("Tracking row counts and data size processed by pipelines.")
+
+if not df_sources.empty:
+    total_rows = df_sources["ROW_COUNT"].sum()
+    total_gb = df_sources["BYTES"].sum() / (1024**3)
+    
+    col1, col2 = st.columns(2)
+    col1.metric("Total Rows Processed", f"{total_rows:,.0f}")
+    col2.metric("Total Data Volume", f"{total_gb:.2f} GB")
+    
+    col_v1, col_v2 = st.columns([2, 1])
+    with col_v1:
+        st.plotly_chart(volume_trend_chart(df_sources), use_container_width=True)
+    with col_v2:
+        st.markdown("### Source Details")
+        st.dataframe(
+            df_sources[["PIPELINE_NAME", "SOURCE_TABLE", "ROW_COUNT", "BYTES"]],
             use_container_width=True,
             height=300
         )
-    else:
-        st.info("No execution data available.")
-
-with col_right:
-    st.markdown('<div class="section-title">Pipeline Health Trend</div>', unsafe_allow_html=True)
-    if not df_jobs.empty:
-        st.plotly_chart(duration_trend_chart(df_jobs), use_container_width=True)
-    else:
-        st.info("No trend data.")
+else:
+    st.info("No volume data available.")
 
 st.markdown("---")
 
-# --- VOLUME SECTION ---
-st.markdown('<div class="section-title">Data Volume & Throughput</div>', unsafe_allow_html=True)
-col_vol1, col_vol2 = st.columns([1, 2])
+# --- 3️⃣ OUTPUT COMPLETENESS ---
+st.markdown('<div class="section-title">3️⃣ Output Completeness</div>', unsafe_allow_html=True)
+st.caption("Verifying data landing in sink tables.")
 
-with col_vol1:
-    st.markdown("### Total Data Processed")
-    if not df_sources.empty:
-        total_rows = df_sources["ROW_COUNT"].sum()
-        total_gb = df_sources["BYTES"].sum() / (1024**3)
-        st.markdown(kpi_card("Total Rows", f"{total_rows:,.0f}", "#8b5cf6"), unsafe_allow_html=True)
-        st.markdown(kpi_card("Total Volume (GB)", f"{total_gb:.2f}", "#d946ef"), unsafe_allow_html=True)
-    else:
-        st.info("No source data.")
-
-with col_vol2:
-    if not df_sources.empty:
-        st.plotly_chart(volume_trend_chart(df_sources), use_container_width=True)
-    else:
-        st.info("No volume trend data.")
+if not df_outputs.empty:
+    st.dataframe(
+        df_outputs[["PIPELINE_NAME", "SINK_TABLE", "ROW_COUNT"]],
+        use_container_width=True
+    )
+else:
+    st.info("No output completeness data available.")
 
 st.markdown("---")
 
-# --- BOTTOM SECTION ---
-st.markdown('<div class="section-title">Weekly Performance Insights</div>', unsafe_allow_html=True)
+# --- 4️⃣ UNIQUENESS & DUPLICATION RISK ---
+st.markdown('<div class="section-title">4️⃣ Uniqueness & Duplication Risk</div>', unsafe_allow_html=True)
+st.caption("Monitoring duplicate records against defined thresholds.")
 
-colA, colB = st.columns([1,1])
+if not df_uniqueness.empty:
+    # Highlight high risk
+    high_risk_dupes = df_uniqueness[df_uniqueness["DUPLICATE_PERCENTAGE"] > df_uniqueness["DUPLICATE_THRESHOLD"]]
+    
+    if not high_risk_dupes.empty:
+        st.error(f"⚠ Detected {len(high_risk_dupes)} pipelines exceeding duplicate thresholds!")
+    
+    st.dataframe(
+        df_uniqueness[[
+            "PIPELINE_NAME", "SINK_TABLE", "DUPLICATE_COUNT", "DUPLICATE_PERCENTAGE", "DUPLICATE_THRESHOLD"
+        ]].style.apply(
+            lambda x: ["background-color: rgba(239, 68, 68, 0.2)"] * len(x) 
+            if x["DUPLICATE_PERCENTAGE"] > x["DUPLICATE_THRESHOLD"] 
+            else [""] * len(x), 
+            axis=1
+        ),
+        use_container_width=True
+    )
+else:
+    st.info("No uniqueness data available.")
 
-with colA:
-    st.markdown("### Data Quality Risk & Stability")
-    if not df_uniqueness.empty:
-         st.dataframe(df_uniqueness[["PIPELINE_NAME", "SINK_TABLE", "DUPLICATE_COUNT", "DUPLICATE_PERCENTAGE"]], use_container_width=True)
-    else:
-        st.info("No quality data.")
+st.markdown("---")
 
-with colB:
-    st.markdown("### SLA Breaches")
-    if not df_jobs.empty:
-        st.plotly_chart(sla_breach_chart(df_jobs), use_container_width=True)
-    else:
-        st.info("No SLA data.")
+# --- 5️⃣ DATA INTEGRITY ---
+st.markdown('<div class="section-title">5️⃣ Data Integrity (Null Monitoring)</div>', unsafe_allow_html=True)
+st.caption("Tracking null values in critical columns.")
+
+if not df_integrity.empty:
+    total_nulls = df_integrity["NULL_COUNT"].sum()
+    st.metric("Total Null Records Detected", f"{total_nulls:,.0f}")
+    
+    st.dataframe(
+        df_integrity[["PIPELINE_NAME", "NULL_COUNT"]],
+        use_container_width=True
+    )
+else:
+    st.info("No integrity data available.")
