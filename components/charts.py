@@ -2,69 +2,128 @@
 import plotly.express as px
 
 
-def duration_trend_chart(df, theme="Dark"):
-    template = "plotly_dark" if theme == "Dark" else "plotly_white"
+
+def duration_trend_chart(df, theme="dark"):
+    # Theme Logic
+    if theme == "dark":
+        template = "plotly_dark"
+        bg_color = "#0E1117"
+        font_color = "white"
+    else:
+        template = "plotly_white"
+        bg_color = "#FFFFFF"
+        font_color = "black"
+
     if df.empty:
-        return px.line(title="Job Duration Trend (No Data)", template=template)
-    
-    fig = px.line(
-        df,
-        x="WEEK",
-        y="DURATION_MINUTES",
-        color="PIPELINE_NAME",
-        title="Job Duration Trend",
-        template=template
+        fig = px.line(title="Job Duration Trend (No Data)")
+    else:
+        fig = px.line(
+            df,
+            x="WEEK",
+            y="DURATION_MINUTES",
+            color="PIPELINE_NAME",
+            title="Job Duration Trend"
+        )
+
+    fig.update_layout(
+        template=template,
+        paper_bgcolor=bg_color,
+        plot_bgcolor=bg_color,
+        font=dict(color=font_color)
     )
     return fig
 
 
-def sla_breach_chart(df, theme="Dark"):
-    template = "plotly_dark" if theme == "Dark" else "plotly_white"
+def sla_breach_chart(df, theme="dark"):
+    # Theme Logic
+    if theme == "dark":
+        template = "plotly_dark"
+        bg_color = "#0E1117"
+        font_color = "white"
+    else:
+        template = "plotly_white"
+        bg_color = "#FFFFFF"
+        font_color = "black"
+
     if df.empty:
-        return px.bar(title="SLA Breach Count (No Data)", template=template)
+        fig = px.bar(title="SLA Breach Count (No Data)")
+    else:
+        agg = df.groupby("PIPELINE_NAME")["SLA_BREACH"].sum().reset_index()
+        fig = px.bar(
+            agg,
+            x="PIPELINE_NAME",
+            y="SLA_BREACH",
+            title="SLA Breach Count"
+        )
+    
+    fig.update_layout(
+        template=template,
+        paper_bgcolor=bg_color,
+        plot_bgcolor=bg_color,
+        font=dict(color=font_color)
+    )
+    return fig
+
+
+def health_score_chart(df, theme="dark"):
+    # Theme Logic
+    if theme == "dark":
+        template = "plotly_dark"
+        bg_color = "#0E1117"
+        font_color = "white"
+    else:
+        template = "plotly_white"
+        bg_color = "#FFFFFF"
+        font_color = "black"
         
-    agg = df.groupby("PIPELINE_NAME")["SLA_BREACH"].sum().reset_index()
+    if df.empty:
+        fig = px.bar(title="Pipeline Health Score (No Data)")
+    else:
+        fig = px.bar(
+            df,
+            x="HEALTH_SCORE",
+            y="PIPELINE_NAME",
+            orientation="h",
+            title="Pipeline Health Score"
+        )
 
-    fig = px.bar(
-        agg,
-        x="PIPELINE_NAME",
-        y="SLA_BREACH",
-        title="SLA Breach Count",
-        template=template
+    fig.update_layout(
+        template=template,
+        paper_bgcolor=bg_color,
+        plot_bgcolor=bg_color,
+        font=dict(color=font_color)
     )
     return fig
 
 
-def health_score_chart(df, theme="Dark"):
-    template = "plotly_dark" if theme == "Dark" else "plotly_white"
-    if df.empty:
-        return px.bar(title="Pipeline Health Score (No Data)", template=template)
-        
-    fig = px.bar(
-        df,
-        x="HEALTH_SCORE",
-        y="PIPELINE_NAME",
-        orientation="h",
-        title="Pipeline Health Score",
-        template=template
-    )
-    return fig
+def volume_trend_chart(df, theme="dark"):
+    # Theme Logic
+    if theme == "dark":
+        template = "plotly_dark"
+        bg_color = "#0E1117"
+        font_color = "white"
+    else:
+        template = "plotly_white"
+        bg_color = "#FFFFFF"
+        font_color = "black"
 
-
-def volume_trend_chart(df, theme="Dark"):
-    template = "plotly_dark" if theme == "Dark" else "plotly_white"
     if df.empty:
-        return px.bar(title="Data Volume Trend (No Data)", template=template)
-    
-    # Ensure date/time sorting if needed, but assuming df is passed correctly from app
-    # Group by PERIOD if available or just date
-    
-    fig = px.bar(
-        df,
-        x="PIPELINE_START_TIME",
-        y="ROW_COUNT",
-        color="PIPELINE_NAME",
-        title="Daily Row Count Processed",
-        template=template
+        fig = px.bar(title="Data Volume Trend (No Data)")
+    else:
+        # Sort by time to ensure trend is correct
+        df_sorted = df.sort_values("PIPELINE_START_TIME")
+        fig = px.bar(
+            df_sorted,
+            x="PIPELINE_START_TIME",
+            y="ROW_COUNT",
+            color="PIPELINE_NAME",
+            title="Daily Row Count Processed"
+        )
+
+    fig.update_layout(
+        template=template,
+        paper_bgcolor=bg_color,
+        plot_bgcolor=bg_color,
+        font=dict(color=font_color)
     )
     return fig

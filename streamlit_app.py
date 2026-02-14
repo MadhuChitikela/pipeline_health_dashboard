@@ -36,80 +36,92 @@ with header_left:
     st.title("Pipeline Health Dashboard")
 
 with header_right:
-    # Simple top-right toggle
-    if st.button(
-        "🌙" if st.session_state.theme_mode == "dark" else "☀️",
-        key="theme_toggle",
-        help="Toggle Theme"
-    ):
-        st.session_state.theme_mode = "light" if st.session_state.theme_mode == "dark" else "dark"
+    # Improved Button with Label
+    btn_label = "🌙 Dark" if st.session_state.theme_mode == "light" else "☀ Light"
+    if st.button(btn_label, key="theme_toggle", help="Toggle Theme"):
+        st.session_state.theme_mode = "dark" if st.session_state.theme_mode == "light" else "light"
         st.rerun()
 
-# Set compatibility variable for charts
-theme_choice = "Dark" if st.session_state.theme_mode == "dark" else "Light"
+# Set compatibility variable for charts (lowercase for consistency)
+theme_choice = "dark" if st.session_state.theme_mode == "dark" else "light"
 
 # ---- DYNAMIC CSS ----
 if st.session_state.theme_mode == "dark":
-    bg_color = "#0e1117"
-    text_color = "white"
-    card_bg = "#161b22"
-    border_color = "#30363d"
-    title_color = "#4ea8de"
+    bg_color = "#0E1117"
+    card_bg = "#161B22"
+    text_color = "#FFFFFF"
+    secondary_text = "#A0AEC0"
+    border_color = "#2D3748"
+    button_bg = "#1F2937"
 else:
-    bg_color = "#ffffff"
+    bg_color = "#FFFFFF"
+    card_bg = "#F3F4F6"
     text_color = "#000000"
-    card_bg = "#f0f2f6"
-    border_color = "#e5e7eb"
-    title_color = "#0369a1"
+    secondary_text = "#4A5568"
+    border_color = "#E2E8F0"
+    button_bg = "#E5E7EB"
 
 st.markdown(f"""
 <style>
-/* Page background */
-.stApp {{
-    background-color: {bg_color};
-    color: {text_color};
-}}
+    .stApp {{
+        background-color: {bg_color};
+        color: {text_color};
+    }}
 
-/* Section headers */
-.section-title {{
-    font-size: 26px;
-    font-weight: 600;
-    color: {title_color};
-    margin-bottom: 10px;
-}}
+    h1, h2, h3, h4, h5, h6 {{
+        color: {text_color} !important;
+    }}
 
-/* Metrics Styling */
-div[data-testid="stMetric"] {{
-    background-color: {card_bg};
-    padding: 15px;
-    border-radius: 10px;
-    border: 1px solid {border_color};
-}}
+    p, span, label, div[data-baseweb="tab-list"] {{
+        color: {text_color} !important;
+    }}
 
-div[data-testid="stMetricLabel"] {{
-    font-weight: 600;
-    color: {text_color};
-}}
+    div[data-testid="stMetric"] {{
+        background-color: {card_bg};
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid {border_color};
+    }}
 
-div[data-testid="stMetricValue"] {{
-    color: {title_color};
-}}
+    div[data-testid="stMetricLabel"] {{
+        color: {secondary_text} !important;
+        font-weight: 600;
+    }}
 
-/* Tabs Styling */
-button[data-baseweb="tab"] {{
-    color: {text_color};
-}}
+    div[data-testid="stMetricValue"] {{
+        color: {text_color} !important;
+    }}
 
-/* Table styling */
-[data-testid="stDataFrame"] {{
-    background-color: {card_bg};
-    border-radius: 10px;
-    padding: 10px;
-    border: 1px solid {border_color};
-}}
-
+    .stButton button {{
+        background-color: {button_bg};
+        color: {text_color};
+        border-radius: 8px;
+        border: none;
+        border: 1px solid {border_color};
+    }}
+    
+    /* Table Styling Adaptation */
+    [data-testid="stDataFrame"] {{
+        background-color: {card_bg};
+        border: 1px solid {border_color};
+    }}
 </style>
 """, unsafe_allow_html=True)
+
+# Helper for Table Styling
+def style_table(df, theme):
+    if theme == "dark":
+        return df.style.set_properties(**{
+            "background-color": "#161B22",
+            "color": "white",
+            "border-color": "#2D3748"
+        })
+    else:
+        return df.style.set_properties(**{
+            "background-color": "white",
+            "color": "black",
+            "border-color": "#E2E8F0"
+        })
 
 
 
@@ -187,9 +199,12 @@ if not df_jobs.empty:
     with tab_t2:
         # Displaying raw fields + computed duration for audit
         st.dataframe(
-            df_jobs[[
-                "PIPELINE_NAME", "JOB_NAME", "EXECUTION_STATUS", "JOB_START_TIME", "END_TIME", "DURATION_MINUTES", "SLA_BREACH"
-            ]].style.map(
+            style_table(
+                df_jobs[[
+                    "PIPELINE_NAME", "JOB_NAME", "EXECUTION_STATUS", "JOB_START_TIME", "END_TIME", "DURATION_MINUTES", "SLA_BREACH"
+                ]], 
+                theme_choice
+            ).map(
                 lambda v: "color: #ef4444; font-weight:bold;" if v == True else ""
                 , subset=["SLA_BREACH"]
             ),
@@ -218,7 +233,10 @@ if not df_sources.empty:
     with col_v2:
         st.markdown("### Source Details")
         st.dataframe(
-            df_sources[["PIPELINE_NAME", "SOURCE_TABLE", "ROW_COUNT", "BYTES"]],
+            style_table(
+                df_sources[["PIPELINE_NAME", "SOURCE_TABLE", "ROW_COUNT", "BYTES"]],
+                theme_choice
+            ),
             use_container_width=True,
             height=300
         )
@@ -233,7 +251,10 @@ st.caption("Verifying data landing in sink tables.")
 
 if not df_outputs.empty:
     st.dataframe(
-        df_outputs[["PIPELINE_NAME", "SINK_TABLE", "ROW_COUNT"]],
+        style_table(
+            df_outputs[["PIPELINE_NAME", "SINK_TABLE", "ROW_COUNT"]],
+            theme_choice
+        ),
         use_container_width=True
     )
 else:
@@ -253,9 +274,12 @@ if not df_uniqueness.empty:
         st.error(f"⚠ Detected {len(high_risk_dupes)} pipelines exceeding duplicate thresholds!")
     
     st.dataframe(
-        df_uniqueness[[
-            "PIPELINE_NAME", "SINK_TABLE", "DUPLICATE_COUNT", "DUPLICATE_PERCENTAGE", "DUPLICATE_THRESHOLD"
-        ]].style.apply(
+        style_table(
+            df_uniqueness[[
+                "PIPELINE_NAME", "SINK_TABLE", "DUPLICATE_COUNT", "DUPLICATE_PERCENTAGE", "DUPLICATE_THRESHOLD"
+            ]],
+            theme_choice
+        ).apply(
             lambda x: ["background-color: rgba(239, 68, 68, 0.2)"] * len(x) 
             if x["DUPLICATE_PERCENTAGE"] > x["DUPLICATE_THRESHOLD"] 
             else [""] * len(x), 
@@ -277,7 +301,10 @@ if not df_integrity.empty:
     st.metric("Total Null Records Detected", f"{total_nulls:,.0f}")
     
     st.dataframe(
-        df_integrity[["PIPELINE_NAME", "NULL_COUNT"]],
+        style_table(
+            df_integrity[["PIPELINE_NAME", "NULL_COUNT"]],
+            theme_choice
+        ),
         use_container_width=True
     )
 else:
