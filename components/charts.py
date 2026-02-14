@@ -5,26 +5,27 @@ import plotly.express as px
 
 
 
+
 def apply_theme_to_fig(fig, theme):
     if theme == "dark":
         fig.update_layout(
             template="plotly_dark",
             paper_bgcolor="#0B1220",
             plot_bgcolor="#0B1220",
-            font=dict(color="#E6EDF3", family="Inter, sans-serif"),
-            hoverlabel=dict(bgcolor="#161B22", bordercolor="#30363D"),
-            legend=dict(font=dict(color="#E6EDF3")),
+            font=dict(color="#FFFFFF", family="Inter, sans-serif", size=12),
+            hoverlabel=dict(bgcolor="#161B22", bordercolor="#30363D", font=dict(color="#FFFFFF")),
+            legend=dict(font=dict(color="#FFFFFF", size=12)),
             xaxis=dict(
-                title_font=dict(color="#E6EDF3"),
-                tickfont=dict(color="#E6EDF3"),
-                gridcolor="rgba(255,255,255,0.1)", 
-                zerolinecolor="rgba(255,255,255,0.1)"
+                title_font=dict(color="#60A5FA", size=13),
+                tickfont=dict(color="#E6EDF3", size=11),
+                gridcolor="rgba(255,255,255,0.08)", 
+                zerolinecolor="rgba(255,255,255,0.08)"
             ),
             yaxis=dict(
-                title_font=dict(color="#E6EDF3"),
-                tickfont=dict(color="#E6EDF3"),
-                gridcolor="rgba(255,255,255,0.1)", 
-                zerolinecolor="rgba(255,255,255,0.1)"
+                title_font=dict(color="#60A5FA", size=13),
+                tickfont=dict(color="#E6EDF3", size=11),
+                gridcolor="rgba(255,255,255,0.08)", 
+                zerolinecolor="rgba(255,255,255,0.08)"
             )
         )
     else:
@@ -32,18 +33,18 @@ def apply_theme_to_fig(fig, theme):
             template="plotly_white",
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
-            font=dict(color="#0F172A", family="Inter, sans-serif"),
-            hoverlabel=dict(bgcolor="white", bordercolor="#E2E8F0"),
-            legend=dict(font=dict(color="#0F172A")),
+            font=dict(color="#0F172A", family="Inter, sans-serif", size=12),
+            hoverlabel=dict(bgcolor="white", bordercolor="#E2E8F0", font=dict(color="#0F172A")),
+            legend=dict(font=dict(color="#0F172A", size=12)),
             xaxis=dict(
-                title_font=dict(color="#0F172A"),
-                tickfont=dict(color="#0F172A"),
+                title_font=dict(color="#2563EB", size=13),
+                tickfont=dict(color="#475569", size=11),
                 gridcolor="rgba(0,0,0,0.06)", 
                 zerolinecolor="rgba(0,0,0,0.06)"
             ),
             yaxis=dict(
-                title_font=dict(color="#0F172A"),
-                tickfont=dict(color="#0F172A"),
+                title_font=dict(color="#2563EB", size=13),
+                tickfont=dict(color="#475569", size=11),
                 gridcolor="rgba(0,0,0,0.06)", 
                 zerolinecolor="rgba(0,0,0,0.06)"
             )

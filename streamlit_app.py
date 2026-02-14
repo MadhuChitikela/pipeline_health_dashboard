@@ -45,23 +45,28 @@ with header_right:
 # Set compatibility variable for charts (lowercase for consistency)
 theme_choice = "dark" if st.session_state.theme_mode == "dark" else "light"
 
-# ---- DYNAMIC CSS (Force Override) ----
+# ---- DYNAMIC CSS (Premium Glow) ----
 if st.session_state.theme_mode == "dark":
     bg_color = "#0B1220"
-    text_color = "#E6EDF3"
+    text_color = "#FFFFFF"
     card_bg = "#111827"
     border_color = "#1F2937"
     metric_bg = "#111827"
+    # Subtle Blue-White Glow for Dark Mode
+    glow_css = "text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);"
+    header_color = "#60A5FA" # Brighter Blue
 else:
     bg_color = "#F1F5F9"
     text_color = "#0F172A"
     card_bg = "rgba(255, 255, 255, 0.75)"
     border_color = "#CBD5E1"
     metric_bg = "#FFFFFF"
+    glow_css = ""
+    header_color = "#2563EB"
 
 st.markdown(f"""
 <style>
-    /* Main App Background - Targeted Specificity */
+    /* Main App Background */
     .stApp, section[data-testid="stAppViewContainer"] {{
         background-color: {bg_color};
     }}
@@ -71,43 +76,60 @@ st.markdown(f"""
     section[data-testid="stAppViewContainer"] p,
     section[data-testid="stAppViewContainer"] span,
     section[data-testid="stAppViewContainer"] label,
-    section[data-testid="stAppViewContainer"] h1,
-    section[data-testid="stAppViewContainer"] h2,
-    section[data-testid="stAppViewContainer"] h3 {{
+    section[data-testid="stAppViewContainer"] li {{
         color: {text_color} !important;
     }}
 
-    /* Metric Cards - High Specificity */
+    /* Headers with Premium Glow */
+    h1, h2, h3, section[data-testid="stAppViewContainer"] h1, 
+    section[data-testid="stAppViewContainer"] h2, 
+    section[data-testid="stAppViewContainer"] h3 {{
+        color: {header_color} !important;
+        font-weight: 700 !important;
+        {glow_css}
+    }}
+
+    /* Metric Cards - Premium Depth */
     div[data-testid="stMetric"] {{
         background-color: {metric_bg} !important;
         border: 1px solid {border_color};
         border-radius: 12px;
-        padding: 15px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        padding: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s;
+    }}
+    div[data-testid="stMetric"]:hover {{
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(59, 130, 246, 0.15);
+    }}
+
+    /* Metric Values - Strong Glow */
+    div[data-testid="stMetricValue"] {{
+        color: {text_color} !important;
+        font-size: 28px !important;
+        font-weight: 700 !important;
+        {glow_css}
     }}
 
     /* Metric Labels */
     div[data-testid="stMetricLabel"] label {{
         color: {text_color} !important;
-        opacity: 0.7;
+        opacity: 0.85;
         font-weight: 600;
-    }}
-
-    div[data-testid="stMetricValue"] {{
-        color: {text_color} !important;
     }}
 
     /* Buttons */
     .stButton > button {{
-        background-color: {border_color};
-        color: {text_color};
+        background-color: {header_color};
+        color: #FFFFFF !important;
         border-radius: 8px;
         border: none;
         font-weight: 600;
-        transition: all 0.2s;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
     }}
     .stButton > button:hover {{
         filter: brightness(1.1);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
     }}
 
     /* DataTable Container */
