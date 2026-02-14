@@ -131,39 +131,47 @@ if st.session_state.theme_mode == "dark":
         text-shadow: 0 0 10px rgba(255,255,255,0.8) !important;
     }
 
-    /* FULL DARK TABLE OVERRIDE */
-    div[data-testid="stDataFrame"], div[data-testid="stDataFrame"] div {
-        background-color: #0f172a !important;
-        color: #ffffff !important;
-        border: none !important;
+    /* ===== TABLE FULL DARK FIX ===== */
+    div[data-testid="stDataFrame"] {
+        background-color: #0b1c33 !important;
+        border-radius: 12px !important;
+        overflow: hidden;
+        border: 1px solid rgba(0,150,255,0.2) !important;
     }
 
     div[data-testid="stDataFrame"] table {
-        background-color: #0f172a !important;
+        background-color: #0b1c33 !important;
+        color: #ffffff !important;
         border-collapse: collapse !important;
     }
 
     div[data-testid="stDataFrame"] th {
-        background-color: #1e293b !important;
+        background-color: #122c4d !important;
         color: #ffffff !important;
-        font-weight: 600 !important;
         border: none !important;
+        font-weight: 600 !important;
     }
 
     div[data-testid="stDataFrame"] td {
-        background-color: #0f172a !important;
+        background-color: #0b1c33 !important;
         color: #ffffff !important;
         border: none !important;
-        border-bottom: 1px solid #1e293b !important;
     }
 
+    div[data-testid="stDataFrame"] tr {
+        border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+    }
+    
     div[data-testid="stDataFrame"] tr:hover td {
-        background-color: #1e293b !important;
+        background-color: #122c4d !important;
     }
 
-    /* Remove white index column */
+    /* Remove white grid lines/index */
+    .stDataFrame div {
+        border: none !important;
+    }
     div[data-testid="stDataFrame"] div[class*="row-header"] {
-        background-color: #0f172a !important;
+        background-color: #0b1c33 !important;
         color: #ffffff !important;
     }
 
